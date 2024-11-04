@@ -1,1 +1,66 @@
-/* You can add global styles to this file, and also import other style files */
+html {
+    height: 100%;
+}
+body {
+    height: 100%;
+    background-color: var(--bg-color-dark);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--font-color);
+    font-size: var(--font-size-md);
+    line-height: 1.5;
+}
+
+a, a:visited {
+    color: var(--font-color);
+    text-decoration: none;
+}
+
+h1 {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--step-3);
+    margin-top: var(--step-2);
+}
+h2 {
+    font-size: var(--font-size-l);
+    margin-bottom: var(--step-2);
+    margin-top: var(--step-2);
+}
+h3 {
+    font-size: var(--font-size-md);
+    margin-bottom: var(--step-1);
+    margin-top: var(--step-2);
+}
+.flex {
+    display: flex;
+    &.row{
+        flex-direction: row;
+    }
+    &.column{
+        flex-direction: column;
+    }
+    &.gap-1{ gap: var(--step-1); }
+    &.gap-2{ gap: var(--step-2); }
+    & .grow-1 {
+        flex-grow: 1;
+    }
+}
+.p-1 { padding: var(--step-1); }
+.p-2 { padding: var(--step-2); }
+.m-1 { margin: var(--step-1); }
+.m-2 { margin: var(--step-2); }
+.mt-1 { margin-top: var(--step-1); }
+.mt-2 { margin-top: var(--step-2); }
+.mt-3 { margin-top: var(--step-3); }
+.mt-4 { margin-top: var(--step-4); }
+
+.scrollable {
+    overflow-y: auto;
+}
+
+.grid {
+    display: grid;
+    height: 100%;
+}
+
+
+
