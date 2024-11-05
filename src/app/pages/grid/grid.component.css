@@ -1,0 +1,10 @@
+.grid {
+    height: 100%;
+    & .cell {
+        background: var(--bg-color);
+        font-size: var(--font-size-xs);
+        &:hover {
+            background-color: var(--btn-success-color);
+        }
+    }    
+}

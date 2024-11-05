@@ -1,0 +1,18 @@
+<div class="flex column gap-2" style="height: 100%;">
+    <div class="flex row end">
+        <div>{{color}}</div>
+        <input type="color" id="head" name="head" (change)="setColor($event)" [value]="color" />
+    </div>
+    <div class="flex column gap-1 grid">
+        @for (row of grid; track $index; let  i = $index) {
+            <div class="flex row gap-1 space-between" style="display: flex;">
+                @for (led of row; track $index; let  j = $index) {
+                    <div class="cell grow-1 flex center items-center" 
+                        (click)="clickCell(led)"
+                        [style.backgroundColor]="led.color"
+                    >{{j}},{{j}}</div>
+                }
+            </div>
+        }
+    </div>
+</div>

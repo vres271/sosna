@@ -38,9 +38,21 @@ h3 {
     &.column{
         flex-direction: column;
     }
-    &.center {
-        justify-content: center
+    &.start {
+        justify-content: start;
     }
+    &.center {
+        justify-content: center;
+    }
+    &.end {
+        justify-content: end;
+    }
+    &.space-between {
+        justify-content: space-between;
+    }
+    &.items-center {
+        align-items: center;
+    }  
     &.gap-1{ gap: var(--step-1); }
     &.gap-2{ gap: var(--step-2); }
     & .grow-1 {

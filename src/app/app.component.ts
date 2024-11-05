@@ -14,6 +14,7 @@ export class AppComponent {
 
   links = [
     {path: RouterPath.Home, title: 'Home'},
+    {path: RouterPath.Grid, title: 'Grid'},
     {path: RouterPath.Settings, title: 'Настройки'},
   ];
 
