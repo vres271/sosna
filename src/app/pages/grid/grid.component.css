@@ -1,10 +1,14 @@
-.grid {
+.led-grid {
     height: 100%;
+    grid-template-columns: repeat(10, minmax(10px, 40px));
+    grid-template-rows: repeat(20, minmax(10px, 1fr));
+    gap: 4px;
+    justify-content: center;
     & .cell {
         background: var(--bg-color);
         font-size: var(--font-size-xs);
         &:hover {
-            background-color: var(--btn-success-color);
+            background-color: var(--bg-color-light-2);
         }
     }    
 }

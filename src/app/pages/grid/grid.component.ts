@@ -9,7 +9,7 @@ import { Component } from '@angular/core';
 })
 export class GridComponent {
 
-  grid: {color: string}[][] = Array(20).fill(null).map(() =>(Array(10).fill(null).map(() => ({color: ''}))));
+  grid: {color: string}[] = Array(200).fill(null).map(() => ({color: ''}));
   color: string = '#ffAE00';
 
   setColor(e: any) {
