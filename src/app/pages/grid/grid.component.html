@@ -6,7 +6,7 @@
     <div class="grid led-grid">
         @for (led of grid; track $index; let  i = $index) {
         <div class="cell grow-1 flex center items-center" 
-            (click)="clickCell(led)"
+            (click)="clickCell(led, i)"
             [style.backgroundColor]="led.color"
         ></div>
         }
