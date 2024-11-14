@@ -18,21 +18,20 @@ export class GridComponent {
 
   clickCell(cell: {color: string}, i: number) {
     cell.color = this.color;
-    console.log(      parseInt('0x'+cell.color[1]+cell.color[2]),
-    parseInt('0x'+cell.color[3]+cell.color[4]),
-    parseInt('0x'+cell.color[5]+cell.color[6]),
-
-)
     fetch('http://192.168.0.103/get?led='+i+
-      '&h='+parseInt('0x'+cell.color[1]+cell.color[2])+
-      '&s='+parseInt('0x'+cell.color[3]+cell.color[4])+
-      '&v='+parseInt('0x'+cell.color[5]+cell.color[6])+
+      '&r='+parseInt('0x'+cell.color[1]+cell.color[2])+
+      '&g='+parseInt('0x'+cell.color[3]+cell.color[4])+
+      '&b='+parseInt('0x'+cell.color[5]+cell.color[6])+
       '')
       .then(res => res.json())
       .then(obj => console.log(obj))
   }
 
-
+  onMouseEnter(cell: {color: string}, i: number, e: MouseEvent) {
+    if (e.buttons === 1) {
+      this.clickCell(cell, i);
+    }
+  }
 
 
 }
