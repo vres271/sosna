@@ -1,15 +1,20 @@
 <div class="flex column gap-2" style="height: 100%;">
     <div class="flex row end gap-2">
+        <select [value]="clickMode" (change)="setClickMode($event)">
+            <option value="click">Set</option>
+            <option value="check">Check</option>
+        </select>
         <input type="color" id="head" name="head" (change)="setColor($event)" [value]="color" />
         <div>{{color}}</div>
+        <ui-input [(value)]="duration"></ui-input>
         <ui-button role="default" (onClick)="clear()">Clear</ui-button>
     </div>
     <div class="grid led-grid mt-4">
-        @for (vector of grid; track $index; let  i = $index) {
-        <div class="cell grow-1 flex center items-center" 
-            (click)="clickCell(vector, i)"
-            (mouseenter)="onMouseEnter(vector, i, $event)"
-            [style.backgroundColor]="getVectorCurrentColor(vector)"
+        @for (cell of grid; track $index; let  i = $index) {
+        <div class="cell grow-1 flex center items-center {{cell.checked ? 'checked' : ''}}" 
+            (click)="clickCell(cell, i)"
+            (mouseenter)="onMouseEnter(cell, i, $event)"
+            [style.backgroundColor]="getVectorCurrentColor(cell.vector)"
         ></div>
         }
     </div>

@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ButtonComponent } from '../../ui/button/button.component';
+import { InputComponent } from '../../ui/input/input.component';
 
 export enum TimeFn {
   Empty,
@@ -30,20 +31,26 @@ export interface IGVector {
 @Component({
   selector: 'app-grid',
   standalone: true,
-  imports: [ButtonComponent],
+  imports: [ButtonComponent, InputComponent],
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css'
 })
 export class GridComponent implements OnInit{
 
-  grid: IGVector[] = Array(200).fill(null).map(() => (
-    {
+  grid: {
+    vector: IGVector,
+    checked: boolean,
+  }[] = Array(200).fill(null).map(() => ({
+    vector: {
       points: [],
       t: 0,
-    }
-  ));
+    },
+    checked: false
+  }));
   color: string = '#ffAE00';
   t: number = new Date().valueOf();
+  clickMode: 'click' | 'check' = 'click';
+  duration = 1000;
 
   constructor(
     private cd: ChangeDetectorRef
@@ -52,10 +59,10 @@ export class GridComponent implements OnInit{
   }
 
   ngOnInit() {
-    const dt = 100;
+    const dt = 10;
     setInterval(() => {
       this.t = new Date().valueOf();
-      this.grid?.forEach(v => v.t = v.t + dt);
+      this.grid?.forEach(cell => cell.vector.t = cell.vector.t + dt);
       this.cd.detectChanges();
     }, dt);
   }
@@ -64,7 +71,14 @@ export class GridComponent implements OnInit{
     this.color = e.target.value;
   }
 
-  clickCell(vector: IGVector, led: number) {
+  clickCell(cell: {vector: IGVector, checked: boolean}, led: number) {
+
+    const {vector, checked} = cell;
+
+    if (this.clickMode === 'check') {
+      cell.checked = !cell.checked;
+      return;
+    }
 
     const [r,g,b] = this.hexToRGB(this.color);
 
@@ -72,7 +86,7 @@ export class GridComponent implements OnInit{
       r,
       g,
       b,
-      t: (vector.points?.length + 1) * 1000,
+      t: (vector.points?.length + 1) * this.duration,
       timeFn: TimeFn.Step,
       orderFn: OrderFn.Linear,  
     })
@@ -92,11 +106,17 @@ export class GridComponent implements OnInit{
 
   }
 
-  onMouseEnter(vector: IGVector, i: number, e: MouseEvent) {
+  onMouseEnter(cell: {vector: IGVector, checked: boolean}, i: number, e: MouseEvent) {
     if (e.buttons === 1) {
-      this.clickCell(vector, i);
+      this.clickCell(cell, i);
     }
   }
+
+  setClickMode(e: Event) {
+    this.clickMode = (e.target as any)?.value ?? '';
+  }
+
+
 
   clear() {
     fetch('http://192.168.0.103/clear', {
@@ -106,20 +126,21 @@ export class GridComponent implements OnInit{
       .then(res => res.json())
       .then(obj => {
         console.log('cleared', obj);
-        this.grid = Array(200).fill(null).map(() => (
-          {
+        this.grid = Array(200).fill(null).map(() => ({
+          vector: {
             points: [],
             t: 0,
-          }
-        ));
+          },
+          checked: false,
+        }));
       })
   }
 
   hexToRGB(color: string): [number, number, number] {
     return [
-      parseInt('0x'+this.color[1]+this.color[2]),
-      parseInt('0x'+this.color[3]+this.color[4]),
-      parseInt('0x'+this.color[5]+this.color[6]),    
+      parseInt('0x'+color[1]+color[2]),
+      parseInt('0x'+color[3]+color[4]),
+      parseInt('0x'+color[5]+color[6]),    
     ]
   }
 

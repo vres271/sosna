@@ -10,5 +10,8 @@
         &:hover {
             background-color: var(--bg-color-light-2);
         }
+        &.checked{
+            outline: 1px solid orange;
+        }
     }    
 }
