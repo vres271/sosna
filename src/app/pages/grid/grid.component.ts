@@ -1,53 +1,85 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ButtonComponent } from '../../ui/button/button.component';
+
+export enum TimeFn {
+  Empty,
+  Step,
+  Gradient
+}
+
+export enum OrderFn {
+  Empty,
+  Linear,
+  Random
+}
+
+export interface IGPoint {
+  r: number;
+  g: number;
+  b: number;
+  t: number;
+  timeFn: TimeFn;
+  orderFn: OrderFn;
+}
+
+export interface IGVector {
+  points: IGPoint[];
+  t: number;
+}
 
 @Component({
   selector: 'app-grid',
   standalone: true,
-  imports: [],
+  imports: [ButtonComponent],
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css'
 })
-export class GridComponent {
+export class GridComponent implements OnInit{
 
-  grid: {color: string}[] = Array(200).fill(null).map(() => ({color: ''}));
+  grid: IGVector[] = Array(200).fill(null).map(() => (
+    {
+      points: [],
+      t: 0,
+    }
+  ));
   color: string = '#ffAE00';
+  t: number = new Date().valueOf();
+
+  constructor(
+    private cd: ChangeDetectorRef
+  ) {
+
+  }
+
+  ngOnInit() {
+    const dt = 100;
+    setInterval(() => {
+      this.t = new Date().valueOf();
+      this.grid?.forEach(v => v.t = v.t + dt);
+      this.cd.detectChanges();
+    }, dt);
+  }
 
   setColor(e: any) {
     this.color = e.target.value;
   }
 
-  clickCell(cell: {color: string}, i: number) {
+  clickCell(vector: IGVector, led: number) {
 
-    cell.color = this.color;
+    const [r,g,b] = this.hexToRGB(this.color);
 
-    // fetch('http://192.168.0.103/get?led='+i+
-    //   '&r='+parseInt('0x'+cell.color[1]+cell.color[2])+
-    //   '&g='+parseInt('0x'+cell.color[3]+cell.color[4])+
-    //   '&b='+parseInt('0x'+cell.color[5]+cell.color[6])+
-    //   '')
-    //   .then(res => res.json())
-    //   .then(obj => console.log(obj))
+    vector.points.push({
+      r,
+      g,
+      b,
+      t: (vector.points?.length + 1) * 1000,
+      timeFn: TimeFn.Step,
+      orderFn: OrderFn.Linear,  
+    })
 
+    const ledsData = led + ':' + this.vectorToString(vector) + ';';
     const formData  = new FormData();
-    // formData.append('led', '' + i);
-    // formData.append('r', '' + parseInt('0x'+cell.color[1]+cell.color[2]));
-    // formData.append('g', '' + parseInt('0x'+cell.color[3]+cell.color[4]));
-    // formData.append('b', '' + parseInt('0x'+cell.color[5]+cell.color[6]));
-    const [r,g,b] = [
-      parseInt('0x'+cell.color[1]+cell.color[2]),
-      parseInt('0x'+cell.color[3]+cell.color[4]),
-      parseInt('0x'+cell.color[5]+cell.color[6]),    
-    ]
-
-    const ledsData = [
-      `${i}:${r},${g},${b},1000,1,1|${r},${g-150},${b-150},2000,1,1|${r-150},${g},${b},2000,1,1;`,
-      `${i+1}:${r-110},${g-120},${b},1500,1,1|${r},${g-140},${b-130},3000,1,1|${r-130},${g},${b},4000,1,1;`,
-      `${i+2}:255,0,0,1000,1,1|0,255,0,2000,1,1|0,0,255,3000,1,1`,
-      // `${i}:${r},${g-50},${b-50},2000,1,1;`,
-      // `${i}:${r-50},${g},${b},2000,1,1;`,
-    ]
-
-    formData.append('payload', ledsData.join(''));
+    formData.append('payload', ledsData);
 
     fetch('http://192.168.0.103/set', {
       method: 'POST',
@@ -60,11 +92,65 @@ export class GridComponent {
 
   }
 
-  onMouseEnter(cell: {color: string}, i: number, e: MouseEvent) {
+  onMouseEnter(vector: IGVector, i: number, e: MouseEvent) {
     if (e.buttons === 1) {
-      this.clickCell(cell, i);
+      this.clickCell(vector, i);
     }
   }
 
+  clear() {
+    fetch('http://192.168.0.103/clear', {
+      method: 'POST',
+      body: new FormData(),
+    })
+      .then(res => res.json())
+      .then(obj => {
+        console.log('cleared', obj);
+        this.grid = Array(200).fill(null).map(() => (
+          {
+            points: [],
+            t: 0,
+          }
+        ));
+      })
+  }
+
+  hexToRGB(color: string): [number, number, number] {
+    return [
+      parseInt('0x'+this.color[1]+this.color[2]),
+      parseInt('0x'+this.color[3]+this.color[4]),
+      parseInt('0x'+this.color[5]+this.color[6]),    
+    ]
+  }
+
+  pointToString(p: IGPoint) {
+    return `${p.r},${p.g},${p.b},${p.t},${p.timeFn},${p.orderFn}`;
+  }
+
+  vectorToString(vector: IGVector) {
+    return vector.points.map(this.pointToString).join('|');
+  }
+
+  getCurrentPoint(vector: IGVector | undefined) {
+    if (!vector || !vector?.points.length) return;
+    const firstPoint = vector.points[0];
+    const lastPoint = vector.points[vector.points.length - 1];
+    if (vector.t >= lastPoint.t) {
+      vector.t = 0;
+      return lastPoint
+    };
+    if (vector.t < firstPoint.t) return lastPoint;
+    return vector.points.find((p, i, arr) => (p.t <= vector.t && vector.t < arr[i + 1].t))
+  }
+
+  getStyleColor(point: IGPoint | undefined) {
+    return point ? `rgb(${point.r},${point.g},${point.b})` : '';
+  }
+
+  getVectorCurrentColor(vector: IGVector | undefined) {
+    if (!vector?.points?.length) return '';
+    const point = this.getCurrentPoint(vector);
+    return this.getStyleColor(point);
+  }
 
 }

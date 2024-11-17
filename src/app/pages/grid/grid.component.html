@@ -1,14 +1,15 @@
 <div class="flex column gap-2" style="height: 100%;">
-    <div class="flex row end">
-        <div>{{color}}</div>
+    <div class="flex row end gap-2">
         <input type="color" id="head" name="head" (change)="setColor($event)" [value]="color" />
+        <div>{{color}}</div>
+        <ui-button role="default" (onClick)="clear()">Clear</ui-button>
     </div>
-    <div class="grid led-grid">
-        @for (led of grid; track $index; let  i = $index) {
+    <div class="grid led-grid mt-4">
+        @for (vector of grid; track $index; let  i = $index) {
         <div class="cell grow-1 flex center items-center" 
-            (click)="clickCell(led, i)"
-            (mouseenter)="onMouseEnter(led, i, $event)"
-            [style.backgroundColor]="led.color"
+            (click)="clickCell(vector, i)"
+            (mouseenter)="onMouseEnter(vector, i, $event)"
+            [style.backgroundColor]="getVectorCurrentColor(vector)"
         ></div>
         }
     </div>
