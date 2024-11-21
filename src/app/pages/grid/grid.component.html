@@ -1,14 +1,23 @@
 <div class="flex column gap-2" style="height: 100%;">
     <div class="flex row end gap-2">
+        <ui-button role="default" (onClick)="setChecked()">Set</ui-button>
         <select [value]="clickMode" (change)="setClickMode($event)">
-            <option value="click">Set</option>
+            <option value="click">Send</option>
             <option value="check">Check</option>
+            <option value="paint">Paint</option>
         </select>
         <input type="color" id="head" name="head" (change)="setColor($event)" [value]="color" />
         <div>{{color}}</div>
         <ui-input [(value)]="duration"></ui-input>
         <ui-button role="default" (onClick)="clear()">Clear</ui-button>
     </div>
+    @if (checkedCells) {
+        <div class="flex row gap-2">
+            @for (point of checkedCells[0]?.vector?.points; track $index) {
+                <div [style.backgroundColor]="getStyleColor(point)">{{point.t}}</div>
+            }
+        </div>
+    }
     <div class="grid led-grid mt-4">
         @for (cell of grid; track $index; let  i = $index) {
         <div class="cell grow-1 flex center items-center {{cell.checked ? 'checked' : ''}}" 

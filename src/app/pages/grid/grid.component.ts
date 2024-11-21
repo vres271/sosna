@@ -52,6 +52,10 @@ export class GridComponent implements OnInit{
   clickMode: 'click' | 'check' = 'click';
   duration = 1000;
 
+  get checkedCells() {
+    return this.grid?.filter(cell => cell.checked)
+  }
+
   constructor(
     private cd: ChangeDetectorRef
   ) {
@@ -91,7 +95,17 @@ export class GridComponent implements OnInit{
       orderFn: OrderFn.Linear,  
     })
 
-    const ledsData = led + ':' + this.vectorToString(vector) + ';';
+    if (this.clickMode === 'click') {
+      this.setLeds([{led, vector}]);
+    }
+
+  }
+
+  setLeds(leds: {led: number, vector: IGVector}[]) {
+
+    const ledsData = leds
+      .map(item => item.led + ':' + this.vectorToString(item.vector))
+      .join(';')
     const formData  = new FormData();
     formData.append('payload', ledsData);
 
@@ -101,8 +115,6 @@ export class GridComponent implements OnInit{
     })
       .then(res => res.json())
       .then(obj => console.log(obj))
-
-
 
   }
 
@@ -116,7 +128,16 @@ export class GridComponent implements OnInit{
     this.clickMode = (e.target as any)?.value ?? '';
   }
 
+  setChecked() {
+    const leds = this.grid
+      .filter(cell => cell.checked)
+      .map((cell, led) => ({
+        led,
+        vector: cell.vector
+      }))
 
+    this.setLeds(leds);
+  }
 
   clear() {
     fetch('http://192.168.0.103/clear', {
