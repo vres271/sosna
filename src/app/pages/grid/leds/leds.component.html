@@ -1,0 +1,30 @@
+<div class="flex row gap-2 center">
+    <div class="flex column gap-2 top items-center">
+        <ui-button
+            (onClick)="selectAll()"
+            label="_All_"
+            [compact]="true"
+        ></ui-button>
+        <ui-button
+            (onClick)="inverseSelection()"
+            label="Invert"
+            [compact]="true"
+        ></ui-button>
+        <ui-button
+            (onClick)="selectNone()"
+            label="None"
+            [compact]="true"
+        ></ui-button>
+        <div>{{selected?.length}}</div>
+    </div>
+    <div class="grid led-grid">
+        @for (block of blocks; track $index; let  i = $index) {
+            <app-led
+                [led]="block.led"
+                [checked]="block.checked"
+                (ledClick)="clickCell(block)"
+            ></app-led>
+        }
+    </div>
+</div>
+

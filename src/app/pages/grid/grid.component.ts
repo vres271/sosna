@@ -1,6 +1,7 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { InputComponent } from '../../ui/input/input.component';
+import { LedsComponent, SelectMode } from './leds/leds.component';
 
 export enum TimeFn {
   Empty,
@@ -28,13 +29,20 @@ export interface IGVector {
   t: number;
 }
 
+export interface ILed {
+  ledIndex: number;
+  vector: IGVector;
+}
+
 @Component({
   selector: 'app-grid',
   standalone: true,
-  imports: [ButtonComponent, InputComponent],
+  imports: [ButtonComponent, InputComponent, LedsComponent],
   templateUrl: './grid.component.html',
-  styleUrl: './grid.component.css'
+  styleUrl: './grid.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
+
 export class GridComponent implements OnInit{
 
   grid: {
@@ -49,8 +57,13 @@ export class GridComponent implements OnInit{
   }));
   color: string = '#ffAE00';
   t: number = new Date().valueOf();
-  clickMode: 'click' | 'check' = 'click';
   duration = 1000;
+  leds: ILed[] = [];
+  selectedLeds: ILed[] = [];
+
+  SelectMode = SelectMode;
+  selectMode = SelectMode.Send;
+
 
   get checkedCells() {
     return this.grid?.filter(cell => cell.checked)
@@ -63,53 +76,64 @@ export class GridComponent implements OnInit{
   }
 
   ngOnInit() {
-    const dt = 10;
-    setInterval(() => {
-      this.t = new Date().valueOf();
-      this.grid?.forEach(cell => cell.vector.t = cell.vector.t + dt);
-      this.cd.detectChanges();
-    }, dt);
+    this.leds  =  this.grid.map((item, i) => ({
+      ledIndex: i,
+      vector: item.vector,
+    }))
+  }
+
+  onLedClick(led: ILed) {
+    const {vector} = led;
+    const [r,g,b] = this.hexToRGB(this.color);
+
+    switch (this.selectMode) {
+      case SelectMode.None:
+        
+        break;
+      case SelectMode.Click:
+        break;
+      case SelectMode.Paint:
+        vector.points.push({
+          r, g, b,
+          t: (vector.points?.length + 1) * this.duration,
+          timeFn: TimeFn.Step,
+          orderFn: OrderFn.Linear,  
+        })
+        this.leds[led.ledIndex] = {
+          ...led
+        }        
+        break;
+      case SelectMode.Send:
+        vector.points.push({
+          r, g, b,
+          t: (vector.points?.length + 1) * this.duration,
+          timeFn: TimeFn.Step,
+          orderFn: OrderFn.Linear,  
+        })
+        this.leds[led.ledIndex] = {
+          ...led
+        }        
+        this.sendLeds([led]);
+        break;
+    
+      default:
+        break;
+    }
+
   }
 
   setColor(e: any) {
     this.color = e.target.value;
   }
 
-  clickCell(cell: {vector: IGVector, checked: boolean}, led: number) {
-
-    const {vector, checked} = cell;
-
-    if (this.clickMode === 'check') {
-      cell.checked = !cell.checked;
-      return;
-    }
-
-    const [r,g,b] = this.hexToRGB(this.color);
-
-    vector.points.push({
-      r,
-      g,
-      b,
-      t: (vector.points?.length + 1) * this.duration,
-      timeFn: TimeFn.Step,
-      orderFn: OrderFn.Linear,  
-    })
-
-    if (this.clickMode === 'click') {
-      this.setLeds([{led, vector}]);
-    }
-
-  }
-
-  setLeds(leds: {led: number, vector: IGVector}[]) {
-
+  sendLeds(leds: ILed[]) {
     const ledsData = leds
-      .map(item => item.led + ':' + this.vectorToString(item.vector))
+      .map(led => led.ledIndex + ':' + this.vectorToString(led.vector))
       .join(';')
     const formData  = new FormData();
     formData.append('payload', ledsData);
-
-    fetch('http://192.168.0.103/set', {
+  
+    fetch('http://192.168.0.104/set', {
       method: 'POST',
       body: formData,
     })
@@ -120,27 +144,48 @@ export class GridComponent implements OnInit{
 
   onMouseEnter(cell: {vector: IGVector, checked: boolean}, i: number, e: MouseEvent) {
     if (e.buttons === 1) {
-      this.clickCell(cell, i);
+      // this.clickCell(cell, i);
     }
   }
 
   setClickMode(e: Event) {
-    this.clickMode = (e.target as any)?.value ?? '';
+    this.selectMode = (e.target as any)?.value ?? '';
   }
 
   setChecked() {
-    const leds = this.grid
-      .filter(cell => cell.checked)
-      .map((cell, led) => ({
-        led,
-        vector: cell.vector
-      }))
-
-    this.setLeds(leds);
+    this.selectedLeds.forEach(led => {
+      const {vector} = led;
+      const [r,g,b] = this.hexToRGB(this.color);
+      vector.points.push({
+        r, g, b,
+        t: (vector.points?.length + 1) * this.duration,
+        timeFn: TimeFn.Step,
+        orderFn: OrderFn.Linear,  
+      })
+      this.leds[led.ledIndex] = {
+        ...led
+      }        
+    })
   }
 
-  clear() {
-    fetch('http://192.168.0.103/clear', {
+  setClear() {
+    this.selectedLeds.forEach(led => {
+      led.vector = {
+        points: [],
+        t: 0,
+      },
+      this.leds[led.ledIndex] = {
+        ...led
+      }        
+    })
+  }
+
+  sendChecked() {
+    this.sendLeds(this.selectedLeds);
+  }
+
+  sendClear() {
+    fetch('http://192.168.0.104/clear', {
       method: 'POST',
       body: new FormData(),
     })
@@ -194,5 +239,10 @@ export class GridComponent implements OnInit{
     const point = this.getCurrentPoint(vector);
     return this.getStyleColor(point);
   }
+
+  get now() {
+    return new Date().getMilliseconds();
+  }
+
 
 }

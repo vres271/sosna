@@ -14,6 +14,7 @@ export class ButtonComponent {
   @Input() label?: string;
   @Input() disabled?: boolean;
   @Input() role: UIRole = 'default';
+  @Input() compact = false;
 
   @Output() onClick = new EventEmitter<UIEvent<undefined, MouseEvent>>;
 

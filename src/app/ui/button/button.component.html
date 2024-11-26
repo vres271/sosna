@@ -1,6 +1,6 @@
 <button
     (click)="clickHandler($event)"
-    [class]="role"
+    [class]="role + (compact ? ' compact' : '')"
     [disabled]="disabled"
 >
     @if (label) {

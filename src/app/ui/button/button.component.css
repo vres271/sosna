@@ -25,6 +25,10 @@ button {
     &.warning {background-color: var(--btn-warning-color);}
     &.danger {background-color: var(--btn-danger-color);}
 
+    &.compact {
+        padding: var(--step-2) var(--step-2);
+    }
+
     /* &::before {
         position: absolute;
         left: 2px;

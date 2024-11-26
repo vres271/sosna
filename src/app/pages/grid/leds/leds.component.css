@@ -1,0 +1,8 @@
+.led-grid {
+    height: 100%;
+    grid-template-columns: repeat(10, minmax(10px, 40px));
+    grid-template-rows: repeat(20, minmax(30px, 1fr));
+    gap: 4px;
+    justify-content: center;
+    
+}
