@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { IGPoint, IGVector, ILed } from '../../grid.component';
 import { ILedBlock } from '../leds.component';
 
@@ -10,7 +10,7 @@ import { ILedBlock } from '../leds.component';
   styleUrl: './led.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LedComponent implements OnInit{
+export class LedComponent implements OnInit, OnChanges{
   @Input() led!: ILed;
   @Input() checked = false;
   @Output() ledClick = new EventEmitter<ILed>();
@@ -24,6 +24,9 @@ export class LedComponent implements OnInit{
 
   ngOnInit(): void {
     this.iterateVectors()
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
   }
 
   onLedClick(led: ILed) {

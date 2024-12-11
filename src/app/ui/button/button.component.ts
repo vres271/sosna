@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { UIEvent, UIRole } from '../types';
 
 @Component({
@@ -18,10 +18,24 @@ export class ButtonComponent {
 
   @Output() onClick = new EventEmitter<UIEvent<undefined, MouseEvent>>;
 
+  constructor(
+    private cd: ChangeDetectorRef
+  ) {}
+
   clickHandler(originalEvent: MouseEvent) {
     this.onClick.emit({
       originalEvent
     })
+  }
+
+  disable() {
+    this.disabled = true;
+    this.cd.detectChanges();
+  }
+
+  enable() {
+    this.disabled = false;
+    this.cd.detectChanges();
   }
 
 }

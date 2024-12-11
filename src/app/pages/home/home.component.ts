@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { ButtonComponent } from '../../ui/button/button.component';
+import { RouterLink } from '@angular/router';
+import { RouterPath } from '../../app.routes';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [ButtonComponent],
+  imports: [ButtonComponent, RouterLink],
   templateUrl: './home.component.html',
   styles: `
     .sosna-logo {
@@ -15,9 +17,12 @@ import { ButtonComponent } from '../../ui/button/button.component';
       background-repeat: no-repeat;
       background-repeat: no-repeat;
       background-position: center center;
+      cursor: pointer;
     }
   `
 })
 export class HomeComponent {
+
+  RouterPath = RouterPath;
 
 }

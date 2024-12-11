@@ -1,1 +1,4 @@
-
+.contrast {
+    color: black;
+    text-shadow: #ffffff 1px 0 2px;
+}

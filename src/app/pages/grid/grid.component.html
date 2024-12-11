@@ -1,10 +1,10 @@
 <div class="flex column gap-2  items-center" style="height: 100%;">
     <div class="flex row end gap-2">
         <ui-button role="success" (onClick)="sendChecked()">Send</ui-button>
-        <ui-button role="danger" (onClick)="sendClear()">Send clear</ui-button>
+        <ui-button role="danger" #btn (onClick)="sendClear(btn)">Send clear</ui-button>
     </div>
     <div class="flex row end gap-2">
-        {{now}}
+        <!-- {{now}} -->
         <select [value]="selectMode" (change)="setClickMode($event)">
             <option [value]="SelectMode.None" [selected]="selectMode === SelectMode.None">{{SelectMode.None}}</option>
             <option [value]="SelectMode.Click" [selected]="selectMode === SelectMode.Click">{{SelectMode.Click}}</option>
@@ -17,16 +17,31 @@
         <ui-button role="primary" (onClick)="setChecked()">Set</ui-button>
         <ui-button role="warning" (onClick)="setClear()">Set clear</ui-button>
     </div>
-    @if (checkedCells) {
+    <div class="flex row gap-2 center">
+        <app-leds
+            [leds]="leds"
+            [(selected)]="selectedLeds" [selectMode]="selectMode"
+            (ledClick)="onLedClick($event)"
+        ></app-leds>
+        <div class="flex column gap-2 top items-center">
+            @for (item of selectModesDict; track $index) {
+                <ui-button
+                    (onClick)="selectMode = item.mode"
+                    [role]="selectMode === item.mode ? 'primary' : 'default'"
+                    [label]="item.label"
+                    [compact]="true"
+                ></ui-button>
+            }
+        </div>
+    </div>
+    @if (selectedLeds.length) {
         <div class="flex row gap-2">
-            @for (point of checkedCells[0]?.vector?.points; track $index) {
-                <div [style.backgroundColor]="getStyleColor(point)">{{point.t}}</div>
+            @for (point of selectedLeds[0].vector.points; track $index) {
+                <div class="flex column gap-1 items-center">
+                    <div class="p-2 contrast" [style.backgroundColor]="getStyleColor(point)">{{point.t}}</div>
+                    <ui-button role="danger" [compact]="true" (onClick)="delPoint(selectedLeds[0], point)">X</ui-button>
+                </div>
             }
         </div>
     }
-    <app-leds
-        [leds]="leds"
-        [(selected)]="selectedLeds" [selectMode]="selectMode"
-        (ledClick)="onLedClick($event)"
-    ></app-leds>
 </div>

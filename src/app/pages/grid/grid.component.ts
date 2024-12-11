@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { ButtonComponent } from '../../ui/button/button.component';
 import { InputComponent } from '../../ui/input/input.component';
 import { LedsComponent, SelectMode } from './leds/leds.component';
+import { APIMockService } from '../../mocks/services/apimock.service';
 
 export enum TimeFn {
   Empty,
@@ -40,21 +41,12 @@ export interface ILed {
   imports: [ButtonComponent, InputComponent, LedsComponent],
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css',
+  providers: [APIMockService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 export class GridComponent implements OnInit{
 
-  grid: {
-    vector: IGVector,
-    checked: boolean,
-  }[] = Array(200).fill(null).map(() => ({
-    vector: {
-      points: [],
-      t: 0,
-    },
-    checked: false
-  }));
   color: string = '#ffAE00';
   t: number = new Date().valueOf();
   duration = 1000;
@@ -62,24 +54,42 @@ export class GridComponent implements OnInit{
   selectedLeds: ILed[] = [];
 
   SelectMode = SelectMode;
-  selectMode = SelectMode.Send;
+  selectMode = SelectMode.Click;
 
-
-  get checkedCells() {
-    return this.grid?.filter(cell => cell.checked)
-  }
+  selectModesDict = [
+    {mode: SelectMode.Click, label: 'Sel'},
+    {mode: SelectMode.ClickMulty, label: 'SelM'},
+    {mode: SelectMode.Paint, label: 'Draw'},
+    {mode: SelectMode.Send, label: 'Send'},
+  ]
 
   constructor(
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private api: APIMockService
   ) {
 
   }
 
-  ngOnInit() {
-    this.leds  =  this.grid.map((item, i) => ({
+  private createLeds() {
+    return Array(200).fill(null).map((item, i) => this.createLed(i))
+  }
+
+  private createLed(i: number): ILed {
+    return {
       ledIndex: i,
-      vector: item.vector,
-    }))
+      vector: this.createVector()
+    }
+  }
+
+  private createVector(): IGVector {
+    return {
+      points: [],
+      t: 0,
+    }
+  }
+
+  ngOnInit() {
+    this.leds =  this.createLeds();
   }
 
   onLedClick(led: ILed) {
@@ -88,8 +98,7 @@ export class GridComponent implements OnInit{
 
     switch (this.selectMode) {
       case SelectMode.None:
-        
-        break;
+      case SelectMode.ClickMulty:
       case SelectMode.Click:
         break;
       case SelectMode.Paint:
@@ -133,12 +142,14 @@ export class GridComponent implements OnInit{
     const formData  = new FormData();
     formData.append('payload', ledsData);
   
-    fetch('http://192.168.0.104/set', {
-      method: 'POST',
-      body: formData,
-    })
-      .then(res => res.json())
-      .then(obj => console.log(obj))
+    // fetch('http://192.168.0.104/set', {
+    //   method: 'POST',
+    //   body: formData,
+    // })
+    //   .then(res => res.json())
+    this.api.set(
+      formData
+    ).then(obj => console.log(obj))
 
   }
 
@@ -184,22 +195,19 @@ export class GridComponent implements OnInit{
     this.sendLeds(this.selectedLeds);
   }
 
-  sendClear() {
-    fetch('http://192.168.0.104/clear', {
-      method: 'POST',
-      body: new FormData(),
+  sendClear(btn: ButtonComponent) {
+    // fetch('http://192.168.0.104/clear', {
+    //   method: 'POST',
+    //   body: new FormData(),
+    // })
+    //   .then(res => res.json())
+
+    btn.disable();
+    this.api.clear().then(res => {
+      this.leds = this.createLeds();
+      btn.enable();
+      this.cd.detectChanges();
     })
-      .then(res => res.json())
-      .then(obj => {
-        console.log('cleared', obj);
-        this.grid = Array(200).fill(null).map(() => ({
-          vector: {
-            points: [],
-            t: 0,
-          },
-          checked: false,
-        }));
-      })
   }
 
   hexToRGB(color: string): [number, number, number] {
@@ -232,6 +240,12 @@ export class GridComponent implements OnInit{
 
   getStyleColor(point: IGPoint | undefined) {
     return point ? `rgb(${point.r},${point.g},${point.b})` : '';
+  }
+
+  delPoint(led: ILed, point: IGPoint) {
+    led.vector.points = led.vector.points.filter(p => p !== point);
+    this.selectedLeds.forEach(sl => sl.vector = led.vector);
+    this.cd.detectChanges();
   }
 
   getVectorCurrentColor(vector: IGVector | undefined) {

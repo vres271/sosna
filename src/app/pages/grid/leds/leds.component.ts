@@ -6,6 +6,7 @@ import { ButtonComponent } from '../../../ui/button/button.component';
 export enum SelectMode {
   None = 'None',
   Click = 'Click',
+  ClickMulty = 'ClickMulty',
   Paint = 'Paint',
   Send = 'Send',
 } 
@@ -62,7 +63,12 @@ export class LedsComponent implements OnChanges, OnInit{
       case SelectMode.None:
         
         break;
+      case SelectMode.ClickMulty:
+        block.checked = !block.checked;
+        this.setSelected();
+        break;
       case SelectMode.Click:
+        this.blocks.forEach(b => b.checked = false);
         block.checked = !block.checked;
         this.setSelected();
         break;
