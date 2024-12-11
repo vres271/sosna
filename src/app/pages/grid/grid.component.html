@@ -5,12 +5,6 @@
     </div>
     <div class="flex row end gap-2">
         <!-- {{now}} -->
-        <select [value]="selectMode" (change)="setClickMode($event)">
-            <option [value]="SelectMode.None" [selected]="selectMode === SelectMode.None">{{SelectMode.None}}</option>
-            <option [value]="SelectMode.Click" [selected]="selectMode === SelectMode.Click">{{SelectMode.Click}}</option>
-            <option [value]="SelectMode.Paint" [selected]="selectMode === SelectMode.Paint">{{SelectMode.Paint}}</option>
-            <option [value]="SelectMode.Send" [selected]="selectMode === SelectMode.Send">{{SelectMode.Send}}</option>
-        </select>
         <input type="color" id="head" name="head" (change)="setColor($event)" [value]="color" />
         <div>{{color}}</div>
         <ui-input [(value)]="duration"></ui-input>
@@ -35,9 +29,9 @@
         </div>
     </div>
     @if (selectedLeds.length) {
-        <div class="flex row gap-2">
+        <div class="flex row gap-2 mt2">
             @for (point of selectedLeds[0].vector.points; track $index) {
-                <div class="flex column gap-1 items-center">
+                <div class="flex column gap-2 items-center">
                     <div class="p-2 contrast" [style.backgroundColor]="getStyleColor(point)">{{point.t}}</div>
                     <ui-button role="danger" [compact]="true" (onClick)="delPoint(selectedLeds[0], point)">X</ui-button>
                 </div>
