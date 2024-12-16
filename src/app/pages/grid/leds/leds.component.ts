@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { IGPoint, IGVector, ILed } from '../grid.component';
 import { LedComponent } from './led/led.component';
 import { ButtonComponent } from '../../../ui/button/button.component';
+import { ILed } from '../../../shared/model/leds';
 
 export enum SelectMode {
   None = 'None',

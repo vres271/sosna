@@ -3,37 +3,10 @@ import { ButtonComponent } from '../../ui/button/button.component';
 import { InputComponent } from '../../ui/input/input.component';
 import { LedsComponent, SelectMode } from './leds/leds.component';
 import { APIMockService } from '../../mocks/services/apimock.service';
+import { APIService } from '../../shared/services/api.service';
+import { LedsService } from '../../shared/services/leds.service';
+import { IGPoint, IGVector, ILed, OrderFn, TimeFn } from '../../shared/model/leds';
 
-export enum TimeFn {
-  Empty,
-  Step,
-  Gradient
-}
-
-export enum OrderFn {
-  Empty,
-  Linear,
-  Random
-}
-
-export interface IGPoint {
-  r: number;
-  g: number;
-  b: number;
-  t: number;
-  timeFn: TimeFn;
-  orderFn: OrderFn;
-}
-
-export interface IGVector {
-  points: IGPoint[];
-  t: number;
-}
-
-export interface ILed {
-  ledIndex: number;
-  vector: IGVector;
-}
 
 @Component({
   selector: 'app-grid',
@@ -41,7 +14,7 @@ export interface ILed {
   imports: [ButtonComponent, InputComponent, LedsComponent],
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css',
-  providers: [APIMockService],
+  providers: [APIMockService, APIService, LedsService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
@@ -65,7 +38,7 @@ export class GridComponent implements OnInit{
 
   constructor(
     private cd: ChangeDetectorRef,
-    private api: APIMockService
+    private ledsService: LedsService
   ) {
 
   }
@@ -136,21 +109,8 @@ export class GridComponent implements OnInit{
   }
 
   sendLeds(leds: ILed[]) {
-    const ledsData = leds
-      .map(led => led.ledIndex + ':' + this.vectorToString(led.vector))
-      .join(';')
-    const formData  = new FormData();
-    formData.append('payload', ledsData);
-  
-    // fetch('http://192.168.0.104/set', {
-    //   method: 'POST',
-    //   body: formData,
-    // })
-    //   .then(res => res.json())
-    this.api.set(
-      formData
-    ).then(obj => console.log(obj))
-
+    this.ledsService.set(leds)
+      .then(res => console.log(res));
   }
 
   onMouseEnter(cell: {vector: IGVector, checked: boolean}, i: number, e: MouseEvent) {
@@ -196,14 +156,9 @@ export class GridComponent implements OnInit{
   }
 
   sendClear(btn: ButtonComponent) {
-    // fetch('http://192.168.0.104/clear', {
-    //   method: 'POST',
-    //   body: new FormData(),
-    // })
-    //   .then(res => res.json())
 
     btn.disable();
-    this.api.clear().then(res => {
+    this.ledsService.clear().then(res => {
       this.leds = this.createLeds();
       btn.enable();
       this.cd.detectChanges();
@@ -216,14 +171,6 @@ export class GridComponent implements OnInit{
       parseInt('0x'+color[3]+color[4]),
       parseInt('0x'+color[5]+color[6]),    
     ]
-  }
-
-  pointToString(p: IGPoint) {
-    return `${p.r},${p.g},${p.b},${p.t},${p.timeFn},${p.orderFn}`;
-  }
-
-  vectorToString(vector: IGVector) {
-    return vector.points.map(this.pointToString).join('|');
   }
 
   getCurrentPoint(vector: IGVector | undefined) {

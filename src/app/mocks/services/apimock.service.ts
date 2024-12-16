@@ -1,24 +1,36 @@
 import { Injectable } from '@angular/core';
+import { APIMethod, IAPIResponse, IAPIService } from '../../shared/services/api.service';
 
 @Injectable()
-export class APIMockService {
+export class APIMockService implements IAPIService {
+
+  private loging = true;
+  private responseDelay = 300;
 
   constructor() { }
 
-  private query(method: string, payload: FormData) {
-    return new Promise(resolve => {
+  query<T>(method: APIMethod, payload?: string): Promise<IAPIResponse<T>> {
+    return new Promise<IAPIResponse<any>>(resolve => {
       setTimeout(() => {
-        resolve({result: 'ok', method})
-      },1000)
+        const response = this.handle(method, payload);
+        if (this.loging) {
+          console.log('APIMockService', {method, payload, response});
+        }
+        resolve(response);
+      }, this.responseDelay)
     })
   }
 
-  set(payload: FormData) {
-    return this.query('set', payload)
-  }
-
-  clear() {
-    return this.query('clear', new FormData)
+  handle(method: APIMethod, payload?: string ) {
+    switch (method) {
+      case APIMethod.Set:
+        const result = payload?.split(';').map(l => +l?.split(':')?.[0]);
+        return {result};
+      case APIMethod.Clear:
+        return {result: 'ok'};
+      default:
+        return {result: 'Unknown method'};
+    }
   }
 
 }

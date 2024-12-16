@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { IGPoint, IGVector, ILed } from '../../grid.component';
-import { ILedBlock } from '../leds.component';
+import { IGPoint, IGVector, ILed } from '../../../../shared/model/leds';
 
 @Component({
   selector: 'app-led',
