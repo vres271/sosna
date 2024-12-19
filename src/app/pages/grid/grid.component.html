@@ -10,8 +10,8 @@
             <div (click)="isPaletteVisible = true" class="cursor-pointer">{{color}}</div>
             @if (isPaletteVisible) {
                 <ui-color-palette 
-                    [value]="color"
-                    (valueChange)="setColor({target: {value: $event}})" 
+                    [(value)]="color"
+                    (valueChange)="isPaletteVisible = false"
                 />
             }
         </div>
