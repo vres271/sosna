@@ -5,6 +5,7 @@ import { APIMethod, IAPIResponse, IAPIService } from '../../shared/services/api.
 export class APIMockService implements IAPIService {
 
   private loging = true;
+  private shortLogMode = true;
   private responseDelay = 300;
 
   constructor() { }
@@ -14,7 +15,7 @@ export class APIMockService implements IAPIService {
       setTimeout(() => {
         const response = this.handle(method, payload);
         if (this.loging) {
-          console.log('APIMockService', {method, payload, response});
+          this.log('APIMockService', method, payload, response);
         }
         resolve(response);
       }, this.responseDelay)
@@ -30,6 +31,14 @@ export class APIMockService implements IAPIService {
         return {result: 'ok'};
       default:
         return {result: 'Unknown method'};
+    }
+  }
+
+  log(label: string, method: APIMethod, payload?: string, response?: IAPIResponse<any>) {
+    if (this.shortLogMode) {
+      console.log(payload, response?.result);
+    } else {
+      console.log(label, {method, payload, response});
     }
   }
 

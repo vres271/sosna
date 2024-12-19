@@ -6,12 +6,13 @@ import { APIMockService } from '../../mocks/services/apimock.service';
 import { APIService } from '../../shared/services/api.service';
 import { LedsService } from '../../shared/services/leds.service';
 import { IGPoint, IGVector, ILed, OrderFn, TimeFn } from '../../shared/model/leds';
+import { ColorPaletteComponent } from '../../ui/color-palette/color-palette.component';
 
 
 @Component({
   selector: 'app-grid',
   standalone: true,
-  imports: [ButtonComponent, InputComponent, LedsComponent],
+  imports: [ButtonComponent, InputComponent, LedsComponent, ColorPaletteComponent],
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css',
   providers: [APIMockService, APIService, LedsService],
@@ -27,7 +28,7 @@ export class GridComponent implements OnInit{
   selectedLeds: ILed[] = [];
 
   SelectMode = SelectMode;
-  selectMode = SelectMode.Click;
+  selectMode = SelectMode.Send;
 
   selectModesDict = [
     {mode: SelectMode.Click, label: 'Sel'},
@@ -35,6 +36,8 @@ export class GridComponent implements OnInit{
     {mode: SelectMode.Paint, label: 'Draw'},
     {mode: SelectMode.Send, label: 'Send'},
   ]
+
+  isPaletteVisible = false;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -106,6 +109,7 @@ export class GridComponent implements OnInit{
 
   setColor(e: any) {
     this.color = e.target.value;
+    this.isPaletteVisible = false;
   }
 
   sendLeds(leds: ILed[]) {

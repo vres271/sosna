@@ -2,3 +2,12 @@
     color: black;
     text-shadow: #ffffff 1px 0 2px;
 }
+
+.palette-dropdown {
+    position: relative;
+    & ui-color-palette {
+        top: 28x;
+        left: 0px;
+        position: absolute;
+    }
+}

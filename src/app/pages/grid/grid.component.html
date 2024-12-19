@@ -6,7 +6,15 @@
     <div class="flex row end gap-2">
         <!-- {{now}} -->
         <input type="color" id="head" name="head" (change)="setColor($event)" [value]="color" />
-        <div>{{color}}</div>
+        <div class="palette-dropdown">
+            <div (click)="isPaletteVisible = true" class="cursor-pointer">{{color}}</div>
+            @if (isPaletteVisible) {
+                <ui-color-palette 
+                    [value]="color"
+                    (valueChange)="setColor({target: {value: $event}})" 
+                />
+            }
+        </div>
         <ui-input [(value)]="duration"></ui-input>
         <ui-button role="primary" (onClick)="setChecked()">Set</ui-button>
         <ui-button role="warning" (onClick)="setClear()">Set clear</ui-button>

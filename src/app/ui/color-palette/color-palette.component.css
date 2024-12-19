@@ -1,0 +1,20 @@
+.colors {
+    grid-template-columns: repeat(10, 32px);
+    grid-template-rows: repeat(20, 32px);
+    & div {
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        transition: all 0.1s ease-out;
+        &:hover {
+            border-radius: 20%;
+        }
+        &.active {
+            border-radius: 30%;
+            cursor: default;
+            &:hover {
+                border-radius: 50%;
+            }
+        }
+    }
+}
