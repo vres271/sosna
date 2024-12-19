@@ -28,8 +28,16 @@ export class LedComponent implements OnInit, OnChanges{
   ngOnChanges(changes: SimpleChanges): void {
   }
 
-  onLedClick(led: ILed) {
+  onLedClick(e: MouseEvent, led: ILed) {
+    e.preventDefault();
     this.ledClick.emit(led);
+  }
+
+  onMouseEnter(e: MouseEvent, led: ILed) {
+    e.preventDefault();
+    if (e.buttons === 1) {
+      this.ledClick.emit(led);
+    }    
   }
 
   getCurrentPoint(vector: IGVector | undefined) {

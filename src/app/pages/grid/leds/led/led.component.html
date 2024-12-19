@@ -1,5 +1,6 @@
 <div class="cell grow-1 flex center items-center {{checked ? 'checked' : ''}}" 
-    (click)="onLedClick(led)"
+    (mousedown)="onLedClick($event, led)"
+    (mouseenter)="onMouseEnter($event, led)"
     [style.backgroundColor]="getVectorCurrentColor(led.vector)"
 ></div>
 
