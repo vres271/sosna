@@ -9,10 +9,7 @@
         <div class="palette-dropdown">
             <div (click)="isPaletteVisible = true" class="cursor-pointer">{{color}}</div>
             @if (isPaletteVisible) {
-                <ui-color-palette 
-                    [(value)]="color"
-                    (valueChange)="isPaletteVisible = false"
-                />
+            <ui-color-palette [(value)]="color" (valueChange)="isPaletteVisible = false" />
             }
         </div>
         <ui-input [(value)]="duration"></ui-input>
@@ -20,30 +17,18 @@
         <ui-button role="warning" (onClick)="setClear()">Set clear</ui-button>
     </div>
     <div class="flex row gap-2 center">
-        <app-leds
-            [leds]="leds"
-            [(selected)]="selectedLeds" [selectMode]="selectMode"
-            (ledClick)="onLedClick($event)"
-        ></app-leds>
+        <app-leds [leds]="leds" [(selected)]="selectedLeds" [selectMode]="selectMode"
+            (ledClick)="onLedClick($event)"></app-leds>
         <div class="flex column gap-2 top items-center">
             @for (item of selectModesDict; track $index) {
-                <ui-button
-                    (onClick)="selectMode = item.mode"
-                    [role]="selectMode === item.mode ? 'primary' : 'default'"
-                    [label]="item.label"
-                    [compact]="true"
-                ></ui-button>
+            <ui-button (onClick)="selectMode = item.mode" [role]="selectMode === item.mode ? 'primary' : 'default'"
+                [label]="item.label" [compact]="true"></ui-button>
             }
         </div>
     </div>
     @if (selectedLeds.length) {
-        <div class="flex row gap-2 mt2">
-            @for (point of selectedLeds[0].vector.points; track $index) {
-                <div class="flex column gap-2 items-center">
-                    <div class="p-2 contrast" [style.backgroundColor]="getStyleColor(point)">{{point.t}}</div>
-                    <ui-button role="danger" [compact]="true" (onClick)="delPoint(selectedLeds[0], point)">X</ui-button>
-                </div>
-            }
-        </div>
+    <div class="flex column gap-2 items-center" style="min-width: 600px;">
+        <app-led-editor [value]="selectedLeds[0]" [color]="color"/>
+    </div>
     }
 </div>

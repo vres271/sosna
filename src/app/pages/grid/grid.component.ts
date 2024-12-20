@@ -7,12 +7,13 @@ import { APIService } from '../../shared/services/api.service';
 import { LedsService } from '../../shared/services/leds.service';
 import { IGPoint, IGVector, ILed, OrderFn, TimeFn } from '../../shared/model/leds';
 import { ColorPaletteComponent } from '../../ui/color-palette/color-palette.component';
+import { LedEditorComponent } from './led-editor/led-editor.component';
 
 
 @Component({
   selector: 'app-grid',
   standalone: true,
-  imports: [ButtonComponent, InputComponent, LedsComponent, ColorPaletteComponent],
+  imports: [ButtonComponent, InputComponent, LedsComponent, ColorPaletteComponent, LedEditorComponent],
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css',
   providers: [APIMockService, APIService, LedsService],

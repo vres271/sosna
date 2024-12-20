@@ -1,0 +1,10 @@
+<div class="flex row slider" 
+    (click)="onSliderClick($event)" 
+    (mousemove)="onPointMove($event, selectedPoint)"
+    >
+    @for (point of value.vector.points; track $index) {
+    <div class="point-marker {{point === selectedPoint ? 'selected' : ''}}"
+        [style.backgroundColor]="getStyleColor(point)" [style.left]="(point.t - 12) + 'px'"
+        (mousedown)="selectPoint(point)"></div>
+    }
+</div>
