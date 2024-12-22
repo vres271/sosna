@@ -60,10 +60,10 @@ export class LedEditorComponent {
   }
 
   onTouchMove(e: TouchEvent, point: IGPoint | null) {
-    // if (!(e.target as HTMLElement).classList.contains('slider')) return;
-    // console.log(e);
-    // if (!point) return;
-    // point.t = e.touches[0].clientX;
+    if (!(e.target as HTMLElement).classList.contains('slider')) return;
+    console.log(e);
+    if (!point) return;
+    point.t = e.touches[0].clientX;
   } 
 
 
