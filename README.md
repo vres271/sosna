@@ -1,6 +1,48 @@
 # Sosna
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.3.
+UI для адресной гирлянды
+
+
+
+## Порты LiveServer наружу
+
+_(потому что забываю)_
+
+1. Параметры сети
+2. Брандмауэр Windows
+3. Дополнительные параметры
+4. Создать правило для входящих подключений
+5. Порт - 5500 (тот, который слушает LiveServer)
+
+## Сборка без папки browser
+
+```json 
+"options": {
+    "outputPath": {
+        "base": "./docs",
+        "browser": ""
+    },
+    "index": "src/index.html",
+    "browser": "src/main.ts",
+    "polyfills": [
+        "zone.js"
+    ],
+    "tsConfig": "tsconfig.app.json",
+    "assets": [
+        {
+        "glob": "**/*",
+        "input": "public"
+        }
+    ],
+    "styles": [
+        "src/reset.css",
+        "src/scheme.css",
+        "src/styles.css"
+    ],
+    "scripts": []
+}
+
+```
 
 ## Development server
 
