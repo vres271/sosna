@@ -28,6 +28,10 @@ export class APIService implements IAPIService{
     return fetch(this.baseURL+method, {
       method: 'POST',
       body: formData,
+      // mode: 'cors',
+      // headers: {
+      //   'Access-Control-Request-Private-Network': 'true'
+      // }
     })
       .then(res => res.json())
   }
