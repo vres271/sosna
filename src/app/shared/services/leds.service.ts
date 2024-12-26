@@ -7,8 +7,8 @@ import { APIMockService } from '../../mocks/services/apimock.service';
 export class LedsService {
 
   constructor(
-    private api: APIService
-    // private api: APIMockService
+    // private api: APIService
+    private api: APIMockService
   ) { }
 
   set(leds: ILed[]) {
@@ -36,5 +36,8 @@ export class LedsService {
     return `${p.r},${p.g},${p.b},${p.t},${p.timeFn},${p.orderFn}`;
   }
 
+  public get isPending() {
+    return this.api.isPending;
+  }
 
 }

@@ -11,3 +11,12 @@
         position: absolute;
     }
 }
+
+.led-editor-wrapper {
+    position: sticky;
+    bottom: 0px;
+    height: 300px;
+    min-width: 500px;
+    background: var(--bg-color);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);    
+}

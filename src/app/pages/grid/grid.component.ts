@@ -29,7 +29,7 @@ export class GridComponent implements OnInit{
   selectedLeds: ILed[] = [];
 
   SelectMode = SelectMode;
-  selectMode = SelectMode.Send;
+  selectMode = SelectMode.Click;
 
   selectModesDict = [
     {mode: SelectMode.Click, label: 'Sel'},
@@ -114,6 +114,7 @@ export class GridComponent implements OnInit{
   }
 
   sendLeds(leds: ILed[]) {
+    if (this.ledsService.isPending) return;
     this.ledsService.set(leds)
       .then(res => console.log(res));
   }

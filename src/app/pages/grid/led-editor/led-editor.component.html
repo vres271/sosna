@@ -1,11 +1,26 @@
-<div class="flex row slider" 
-    (click)="onSliderClick($event)" 
-    (mousemove)="onPointMove($event, selectedPoint)"
-    (touchmove)="onTouchMove($event, selectedPoint)"
-    >
-    @for (point of value.vector.points; track $index) {
-    <div class="point-marker {{point === selectedPoint ? 'selected' : ''}}"
-        [style.backgroundColor]="getStyleColor(point)" [style.left]="(point.t - 12) + 'px'"
-        (mousedown)="selectPoint(point)"></div>
+<div class="flex column gap-2">
+    <div class="flex row">
+        <ui-input [(value)]="maxT" type="number"></ui-input>
+    </div>
+    <div class="flex row slider" 
+        (click)="onSliderClick($event)" 
+        (mousemove)="onPointMove($event, selectedPoint)"
+        (touchmove)="onTouchMove($event, selectedPoint)"
+        >
+        @for (point of value.vector.points; track $index) {
+        <div class="point-marker {{point === selectedPoint ? 'selected' : ''}}"
+            [style.backgroundColor]="getStyleColor(point)" [style.left]="getPointLeft(point)"
+            (mousedown)="selectPoint(point)"></div>
+        }
+    </div>
+    @if (selectedPoint) {
+        <div class="flex column gap-2">
+            <div><input type="color" (change)="setPointColor(selectedPoint, $event)" [value]="getPointColor(selectedPoint)" /></div>
+            <ui-input [(value)]="selectedPoint.t" type="number"></ui-input>
+            <div>orderFn: {{selectedPoint.orderFn}}</div>
+            <div>timeFn: {{selectedPoint.timeFn}}</div>
+            <div>rgb: {{selectedPoint.r}},{{selectedPoint.g}},{{selectedPoint.b}}</div>
+            <div>hex: {{getPointColor(selectedPoint)}}</div>
+        </div>
     }
 </div>

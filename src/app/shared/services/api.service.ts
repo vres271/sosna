@@ -10,6 +10,7 @@ export interface IAPIResponse<T> {
 }
 
 export interface IAPIService {
+  isPending: boolean;
   query<T>(method: APIMethod, payload?: any): Promise<IAPIResponse<T>>
 }
 
@@ -17,6 +18,7 @@ export interface IAPIService {
 export class APIService implements IAPIService{
 
   private baseURL = 'http://192.168.0.104/';
+  public isPending = false;
 
   constructor() { }
 
@@ -25,6 +27,7 @@ export class APIService implements IAPIService{
     if (payload) {
       formData.append('payload', payload);
     }
+    this.isPending = true;
     return fetch(this.baseURL+method, {
       method: 'POST',
       body: formData,
@@ -33,7 +36,12 @@ export class APIService implements IAPIService{
       //   'Access-Control-Request-Private-Network': 'true'
       // }
     })
-      .then(res => res.json())
+      .finally(() => {
+        this.isPending = false;
+      })
+      .then(res => {
+        return res.json();
+      })
   }
 
 }

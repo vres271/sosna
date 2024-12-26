@@ -8,9 +8,12 @@ export class APIMockService implements IAPIService {
   private shortLogMode = true;
   private responseDelay = 300;
 
+  public isPending = false;
+
   constructor() { }
 
   query<T>(method: APIMethod, payload?: string): Promise<IAPIResponse<T>> {
+    this.isPending = true;
     return new Promise<IAPIResponse<any>>(resolve => {
       setTimeout(() => {
         const response = this.handle(method, payload);
@@ -18,6 +21,7 @@ export class APIMockService implements IAPIService {
           this.log('APIMockService', method, payload, response);
         }
         resolve(response);
+        this.isPending = false;
       }, this.responseDelay)
     })
   }
