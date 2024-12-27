@@ -3,7 +3,7 @@
         <ui-input [(value)]="maxT" type="number"></ui-input>
     </div>
     <div class="flex row slider" 
-        (click)="onSliderClick($event)" 
+        (mousedown)="onSliderClick($event)" 
         (mousemove)="onPointMove($event, selectedPoint)"
         (touchmove)="onTouchMove($event, selectedPoint)"
         >
@@ -14,13 +14,18 @@
         }
     </div>
     @if (selectedPoint) {
-        <div class="flex column gap-2">
-            <div><input type="color" (change)="setPointColor(selectedPoint, $event)" [value]="getPointColor(selectedPoint)" /></div>
-            <ui-input [(value)]="selectedPoint.t" type="number"></ui-input>
-            <div>orderFn: {{selectedPoint.orderFn}}</div>
-            <div>timeFn: {{selectedPoint.timeFn}}</div>
-            <div>rgb: {{selectedPoint.r}},{{selectedPoint.g}},{{selectedPoint.b}}</div>
-            <div>hex: {{getPointColor(selectedPoint)}}</div>
+        <div class="flex row gap-2">
+            <div class="flex column gap-2">
+                <div><input type="color" (change)="setPointColor(selectedPoint, $event)" [value]="getPointColor(selectedPoint)" /></div>
+                <ui-input [(value)]="selectedPoint.t" type="number"></ui-input>
+                <div>orderFn: {{selectedPoint.orderFn}}</div>
+                <div>timeFn: {{selectedPoint.timeFn}}</div>
+                <div>rgb: {{selectedPoint.r}},{{selectedPoint.g}},{{selectedPoint.b}}</div>
+                <div>hex: {{getPointColor(selectedPoint)}}</div>
+            </div>
+            <div class="flex column gap-2">
+                <ui-button (onClick)="deletePoint(selectedPoint)" role="danger">Delete</ui-button>
+            </div>
         </div>
     }
 </div>

@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IGPoint, ILed, OrderFn, TimeFn } from '../../../shared/model/leds';
 import { InputComponent } from '../../../ui/input/input.component';
+import { ButtonComponent } from '../../../ui/button/button.component';
 
 @Component({
   selector: 'app-led-editor',
   standalone: true,
-  imports: [InputComponent],
+  imports: [InputComponent, ButtonComponent],
   templateUrl: './led-editor.component.html',
   styleUrl: './led-editor.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,6 +16,7 @@ export class LedEditorComponent {
   @Input() color!: string;
 
   sliderWidth = 500;
+  markerWidth = 24;
 
   selectedPoint: IGPoint | null = null;
   maxT = 5000;
@@ -54,7 +56,10 @@ export class LedEditorComponent {
 
   onSliderClick(e: MouseEvent) {
     if (!(e.target as HTMLElement).classList.contains('slider')) return;
-    this.addPoint(e.offsetX);
+    const t = this.pixelsToTime(e.offsetX);
+    const intersection = this.value.vector.points.some(p => Math.abs(p.t - t) < this.pixelsToTime(this.markerWidth/2));
+    if (intersection) return;
+    this.addPoint(t);
   }
 
   selectPoint(point: IGPoint) {
@@ -96,15 +101,27 @@ export class LedEditorComponent {
   onPointMove(e: MouseEvent, point: IGPoint | null) {
     if (!(e.target as HTMLElement).classList.contains('slider')) return;
     if (e.buttons !== 1 || !point) return;
-    point.t = this.pixelsToTime(e.offsetX);
+    this.movePointTime(point, e.offsetX);
   }
 
   onTouchMove(e: TouchEvent, point: IGPoint | null) {
     if (!(e.target as HTMLElement).classList.contains('slider')) return;
     if (!point) return;
-    point.t = this.pixelsToTime(e.touches[0].clientX);
+    this.movePointTime(point, e.touches[0].clientX);
   } 
 
+  movePointTime(point: IGPoint, pixels: number) {
+    const t = this.pixelsToTime(pixels);
+    const i = this.value.vector.points.indexOf(point);
+    const next = this.value.vector.points[i+1];
+    if (next && t > point.t && (t >= next.t || t >= this.maxT)) return;
+    const prev = this.value.vector.points[i-1];
+    if (prev && t < point.t && (t <= prev.t || t<= this.maxT)) return;
+    point.t = this.pixelsToTime(pixels);
+  }
 
-  
+  deletePoint(point: IGPoint) {
+    this.value.vector.points = this.value.vector.points.filter(p => p !== point);
+  }
+
 }
