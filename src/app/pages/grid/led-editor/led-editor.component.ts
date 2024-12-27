@@ -52,6 +52,7 @@ export class LedEditorComponent {
       orderFn: OrderFn.Linear,
     }
     this.value.vector.points.push(point);
+    this.value.vector.points.sort((a,b) => a.t - b.t);
   }
 
   onSliderClick(e: MouseEvent) {
@@ -79,7 +80,7 @@ export class LedEditorComponent {
   }
 
   getPointLeft(point: IGPoint) {
-    return this.timeToPixels(point.t) + 'px';
+    return (this.timeToPixels(point.t) - this.markerWidth / 2) + 'px';
   }
 
   getPointColor(point: IGPoint) {
@@ -116,7 +117,7 @@ export class LedEditorComponent {
     const next = this.value.vector.points[i+1];
     if (next && t > point.t && (t >= next.t || t >= this.maxT)) return;
     const prev = this.value.vector.points[i-1];
-    if (prev && t < point.t && (t <= prev.t || t<= this.maxT)) return;
+    if (prev && t < point.t && (t <= prev.t || t <= 0)) return;
     point.t = this.pixelsToTime(pixels);
   }
 

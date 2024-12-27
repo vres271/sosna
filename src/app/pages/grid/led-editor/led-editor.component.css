@@ -16,7 +16,8 @@
         cursor: pointer;
         z-index: 1;
         &.selected {
-            border-radius: 2px;
+            /* border-radius: 2px; */
+            outline: 4px solid var(--bg-color-light-2);
         }
     }
 }
