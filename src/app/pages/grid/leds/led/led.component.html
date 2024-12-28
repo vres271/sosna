@@ -2,5 +2,5 @@
     (mousedown)="onLedClick($event, led)"
     (mouseenter)="onMouseEnter($event, led)"
     [style.backgroundColor]="getVectorCurrentColor(led.vector)"
-></div>
+>{{led.ledIndex}}</div>
 

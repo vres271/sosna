@@ -4,6 +4,7 @@
 .cell {
     background: var(--bg-color);
     font-size: var(--font-size-xs);
+    color: rgba(255, 255, 255, 0.157);
     &:hover {
         background-color: var(--bg-color-light-2);
     }

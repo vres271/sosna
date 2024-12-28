@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { IGPoint, ILed, OrderFn, TimeFn } from '../../../shared/model/leds';
 import { InputComponent } from '../../../ui/input/input.component';
 import { ButtonComponent } from '../../../ui/button/button.component';
@@ -11,9 +11,11 @@ import { ButtonComponent } from '../../../ui/button/button.component';
   styleUrl: './led-editor.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LedEditorComponent {
-  @Input() value!: ILed;
+export class LedEditorComponent implements OnChanges{
+  @Input() led!: ILed;
+  @Output() valueChange = new EventEmitter<ILed>();
   @Input() color!: string;
+  value!: ILed;
 
   sliderWidth = 500;
   markerWidth = 24;
@@ -21,9 +23,15 @@ export class LedEditorComponent {
   selectedPoint: IGPoint | null = null;
   maxT = 5000;
 
-  setMaxT(e: Event) {
-    this.maxT = e.target ? parseInt((e.target as HTMLInputElement).value) : 5000;
-  };
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['value']) {
+      this.selectedPoint = null;
+    }
+    if (changes['led']) {
+      this.value = JSON.parse(JSON.stringify(this.led));
+    }
+  }
+    
 
   getStyleColor(point: IGPoint | undefined) {
     return point ? `rgb(${point.r},${point.g},${point.b})` : '';
@@ -35,10 +43,6 @@ export class LedEditorComponent {
       parseInt('0x'+color[3]+color[4]),
       parseInt('0x'+color[5]+color[6]),    
     ]
-  }
-
-  delPoint(point: IGPoint) {
-    console.log(point)
   }
 
   addPoint(t: number) {
@@ -53,6 +57,17 @@ export class LedEditorComponent {
     }
     this.value.vector.points.push(point);
     this.value.vector.points.sort((a,b) => a.t - b.t);
+    this.selectPoint(point);
+    this.valueChange.emit(this.value);
+  }
+
+  onMaxTChange() {
+    const lastPoint = this.value.vector.points[this.value.vector.points.length - 1];
+    if (lastPoint && this.maxT < lastPoint.t) {
+      const k = this.maxT / lastPoint.t;
+      this.value.vector.points.forEach(p => p.t *= k);
+    }
+    this.valueChange.emit(this.value);
   }
 
   onSliderClick(e: MouseEvent) {
@@ -97,6 +112,7 @@ export class LedEditorComponent {
     point.r = r;
     point.g = g;
     point.b = b;
+    this.valueChange.emit(this.value);
   }
 
   onPointMove(e: MouseEvent, point: IGPoint | null) {
@@ -106,23 +122,27 @@ export class LedEditorComponent {
   }
 
   onTouchMove(e: TouchEvent, point: IGPoint | null) {
-    if (!(e.target as HTMLElement).classList.contains('slider')) return;
     if (!point) return;
-    this.movePointTime(point, e.touches[0].clientX);
+    this.movePointTime(point, Math.round(e.touches[0].clientX - this.markerWidth));
   } 
 
   movePointTime(point: IGPoint, pixels: number) {
     const t = this.pixelsToTime(pixels);
     const i = this.value.vector.points.indexOf(point);
+    if (t > this.maxT) return;
     const next = this.value.vector.points[i+1];
-    if (next && t > point.t && (t >= next.t || t >= this.maxT)) return;
+    if (next && t > point.t && t >= next.t) return;
+    if (t < 0) return;
     const prev = this.value.vector.points[i-1];
-    if (prev && t < point.t && (t <= prev.t || t <= 0)) return;
+    if (prev && t < point.t && t <= prev.t) return;
     point.t = this.pixelsToTime(pixels);
+    this.valueChange.emit(this.value);
   }
 
   deletePoint(point: IGPoint) {
     this.value.vector.points = this.value.vector.points.filter(p => p !== point);
+    this.selectedPoint = null;
+    this.valueChange.emit(this.value);
   }
 
 }

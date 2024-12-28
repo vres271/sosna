@@ -162,7 +162,6 @@ export class GridComponent implements OnInit{
   }
 
   sendClear(btn: ButtonComponent) {
-
     btn.disable();
     this.ledsService.clear().then(res => {
       this.leds = this.createLeds();
@@ -195,21 +194,30 @@ export class GridComponent implements OnInit{
     return point ? `rgb(${point.r},${point.g},${point.b})` : '';
   }
 
-  delPoint(led: ILed, point: IGPoint) {
-    led.vector.points = led.vector.points.filter(p => p !== point);
-    this.selectedLeds.forEach(sl => sl.vector = led.vector);
-    this.cd.detectChanges();
-  }
-
   getVectorCurrentColor(vector: IGVector | undefined) {
     if (!vector?.points?.length) return '';
     const point = this.getCurrentPoint(vector);
     return this.getStyleColor(point);
   }
 
+  private copyLedVector(vector: IGVector): IGVector {
+    return {
+      ...vector,
+      points: [...vector.points.map(p => ({...p}))]
+    }
+
+  }
+
+  onLedChange(led: ILed) {
+    this.selectedLeds.forEach(sl => {
+      this.leds[sl.ledIndex].vector = this.copyLedVector(led.vector);
+    })
+    // this.leds = [...this.leds];
+    this.cd.detectChanges();
+  }
+
   get now() {
     return new Date().getMilliseconds();
   }
-
 
 }

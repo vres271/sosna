@@ -28,7 +28,10 @@
     </div>
     @if (selectedLeds.length) {
     <div class="flex column gap-2 items-center led-editor-wrapper p-2" >
-        <app-led-editor [value]="selectedLeds[0]" [color]="color"/>
+        <app-led-editor 
+            [led]="selectedLeds[0]"
+            (valueChange)="onLedChange($event)"
+            [color]="color"/>
     </div>
     }
 </div>
