@@ -20,6 +20,10 @@ export class LedsService {
     return this.api.query<'ok'>(APIMethod.Clear);
   }
 
+  setMode(modeId: number) {
+    return this.api.query<number>(APIMethod.SetMode, String(modeId));
+  }
+
   private ledsToString(leds: ILed[]) {
     return leds
       .map(led => led.ledIndex + ':' + this.vectorToString(led.vector))

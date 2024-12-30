@@ -5,7 +5,7 @@ import { APIMethod, IAPIResponse, IAPIService } from '../../shared/services/api.
 export class APIMockService implements IAPIService {
 
   private loging = true;
-  private shortLogMode = true;
+  private shortLogMode = false;
   private responseDelay = 300;
 
   public isPending = false;
@@ -27,12 +27,16 @@ export class APIMockService implements IAPIService {
   }
 
   handle(method: APIMethod, payload?: string ) {
+    let result;
     switch (method) {
       case APIMethod.Set:
-        const result = payload?.split(';').map(l => +l?.split(':')?.[0]);
+        result = payload?.split(';').map(l => +l?.split(':')?.[0]);
         return {result};
       case APIMethod.Clear:
         return {result: 'ok'};
+      case APIMethod.SetMode:
+        result = payload ? parseInt(payload, 10) : null;
+        return {result};
       default:
         return {result: 'Unknown method'};
     }

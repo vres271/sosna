@@ -4,6 +4,7 @@ import { ConfigService } from './config.service';
 export enum APIMethod {
   Set = 'set',
   Clear = 'clear',
+  SetMode = 'setmode',
 }
 
 export interface IAPIResponse<T> {

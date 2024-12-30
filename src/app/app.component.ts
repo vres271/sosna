@@ -26,7 +26,8 @@ export class AppComponent {
   links = [
     {path: RouterPath.Home, title: 'Home'},
     {path: RouterPath.Grid, title: 'Grid'},
-    {path: RouterPath.Settings, title: 'Настройки'},
+    {path: RouterPath.Modes, title: 'Modes'},
+    {path: RouterPath.Settings, title: 'Settings'},
   ];
 
   title = 'Sosna';
