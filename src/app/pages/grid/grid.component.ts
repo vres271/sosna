@@ -165,6 +165,7 @@ export class GridComponent implements OnInit{
     btn.disable();
     this.ledsService.clear().then(res => {
       this.leds = this.createLeds();
+      this.selectedLeds = [];
       btn.enable();
       this.cd.detectChanges();
     })

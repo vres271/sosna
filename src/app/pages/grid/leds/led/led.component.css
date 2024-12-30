@@ -11,6 +11,6 @@
         background-color: var(--bg-color-light-2);
     }
     &.checked {
-        outline: 1px solid var(--bg-color-light);
+        outline: 1px dotted var(--bg-color-light);
     }
 }

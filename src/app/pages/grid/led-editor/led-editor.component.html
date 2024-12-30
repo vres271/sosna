@@ -1,4 +1,4 @@
-<div class="flex column gap-2">
+<div class="flex column gap-2 p-2">
     <div class="flex row">
         <ui-input 
             [(value)]="maxT" 
@@ -6,7 +6,7 @@
             type="number" [min]="100"
         ></ui-input>
     </div>
-    <div class="flex row slider" 
+    <div class="flex row slider" #timeLine
         (mousedown)="onSliderClick($event)" 
         (mousemove)="onPointMove($event, selectedPoint)"
         (touchmove)="onTouchMove($event, selectedPoint)"

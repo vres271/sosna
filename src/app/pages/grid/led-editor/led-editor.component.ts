@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { IGPoint, ILed, OrderFn, TimeFn } from '../../../shared/model/leds';
 import { InputComponent } from '../../../ui/input/input.component';
 import { ButtonComponent } from '../../../ui/button/button.component';
@@ -11,10 +11,11 @@ import { ButtonComponent } from '../../../ui/button/button.component';
   styleUrl: './led-editor.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LedEditorComponent implements OnChanges{
+export class LedEditorComponent implements OnChanges, AfterViewInit{
   @Input() led!: ILed;
   @Output() valueChange = new EventEmitter<ILed>();
   @Input() color!: string;
+  @ViewChild('timeLine') timeLine!: ElementRef;
   value!: ILed;
 
   sliderWidth = 500;
@@ -22,6 +23,13 @@ export class LedEditorComponent implements OnChanges{
 
   selectedPoint: IGPoint | null = null;
   maxT = 5000;
+
+  constructor(private cd: ChangeDetectorRef) {}
+
+  ngAfterViewInit() {
+    this.sliderWidth = this.timeLine.nativeElement.clientWidth;
+    this.cd.detectChanges();
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['value']) {
@@ -31,7 +39,6 @@ export class LedEditorComponent implements OnChanges{
       this.value = JSON.parse(JSON.stringify(this.led));
     }
   }
-    
 
   getStyleColor(point: IGPoint | undefined) {
     return point ? `rgb(${point.r},${point.g},${point.b})` : '';
@@ -87,11 +94,11 @@ export class LedEditorComponent implements OnChanges{
   }
 
   pixelsToTime(pixels: number) {
-    return pixels * this.k;
+    return Math.round(pixels * this.k);
   }
 
   timeToPixels(time: number) {
-    return time / this.k;
+    return Math.round(time / this.k);
   }
 
   getPointLeft(point: IGPoint) {
@@ -135,7 +142,7 @@ export class LedEditorComponent implements OnChanges{
     if (t < 0) return;
     const prev = this.value.vector.points[i-1];
     if (prev && t < point.t && t <= prev.t) return;
-    point.t = this.pixelsToTime(pixels);
+    point.t = t;
     this.valueChange.emit(this.value);
   }
 
