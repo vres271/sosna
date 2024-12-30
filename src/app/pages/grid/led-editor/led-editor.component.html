@@ -28,7 +28,7 @@
                         [value]="getPointColor(selectedPoint)" 
                     />
                     <ui-input [(value)]="selectedPoint.t" type="number"></ui-input>
-                    <ui-button (onClick)="deletePoint(selectedPoint)" role="danger">Delete</ui-button>
+                    <ui-button (onClick)="deletePoint(selectedPoint)" role="danger" [compact]="true">Delete</ui-button>
                 </div>
                 <div>orderFn: {{selectedPoint.orderFn}}</div>
                 <div>timeFn: {{selectedPoint.timeFn}}</div>

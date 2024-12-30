@@ -1,30 +1,25 @@
 <div class="flex column gap-2  items-center" style="height: 100%;">
     <div class="flex row end gap-2">
-        <ui-button role="success" (onClick)="sendChecked()">Send</ui-button>
-        <ui-button role="danger" #btn (onClick)="sendClear(btn)">Send clear</ui-button>
-    </div>
-    <div class="flex row end gap-2">
-        <!-- {{now}} -->
         <input type="color" id="head" name="head" (change)="setColor($event)" [value]="color" />
+        <ui-button role="success" (onClick)="sendChecked()" [compact]="true">SD</ui-button>
+        <ui-button role="danger" #btn (onClick)="sendClear(btn)" [compact]="true">SC</ui-button>
         <div class="palette-dropdown">
-            <div (click)="isPaletteVisible = true" class="cursor-pointer">{{color}}</div>
+            <ui-button role="primary" (onClick)="isPaletteVisible = true" [compact]="true">P</ui-button>
             @if (isPaletteVisible) {
             <ui-color-palette [(value)]="color" (valueChange)="isPaletteVisible = false" />
             }
         </div>
-        <ui-input [(value)]="duration"></ui-input>
-        <ui-button role="primary" (onClick)="setChecked()">Set</ui-button>
-        <ui-button role="warning" (onClick)="setClear()">Set clear</ui-button>
+        @for (item of selectModesDict; track $index) {
+        <ui-button (onClick)="selectMode = item.mode" [role]="selectMode === item.mode ? 'primary' : 'default'"
+            [label]="item.label" [compact]="true"></ui-button>
+        }
+        <!-- <ui-input [(value)]="duration"></ui-input> -->
+        <!-- <ui-button role="primary" (onClick)="setChecked()" [compact]="true">ST</ui-button> -->
+        <!-- <ui-button role="warning" (onClick)="setClear()" [compact]="true">STC</ui-button> -->
     </div>
     <div class="flex row gap-2 center">
         <app-leds [leds]="leds" [(selected)]="selectedLeds" [selectMode]="selectMode"
             (ledClick)="onLedClick($event)"></app-leds>
-        <div class="flex column gap-2 top items-center">
-            @for (item of selectModesDict; track $index) {
-            <ui-button (onClick)="selectMode = item.mode" [role]="selectMode === item.mode ? 'primary' : 'default'"
-                [label]="item.label" [compact]="true"></ui-button>
-            }
-        </div>
     </div>
     @if (selectedLeds.length) {
     <div class="flex column gap-2 items-center led-editor-wrapper p-2" >

@@ -17,7 +17,7 @@ export interface IAPIService {
 @Injectable()
 export class APIService implements IAPIService{
 
-  private baseURL = 'http://192.168.0.104/';
+  public baseURL = 'http://192.168.0.102/';
   public isPending = false;
 
   constructor() { }

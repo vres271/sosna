@@ -7,8 +7,8 @@ import { APIMockService } from '../../mocks/services/apimock.service';
 export class LedsService {
 
   constructor(
-    // private api: APIService
-    private api: APIMockService
+    private api: APIService
+    // private api: APIMockService
   ) { }
 
   set(leds: ILed[]) {

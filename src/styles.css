@@ -85,3 +85,6 @@ h3 {
     cursor: pointer;
 }
 
+.opacity-50 {
+    opacity: 0.5;
+}
