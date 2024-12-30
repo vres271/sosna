@@ -13,9 +13,10 @@ export class InputComponent {
   @Input() type?: 'text' | 'number' | 'email';
   @Input() disabled?: boolean;
   @Input() placeholder?: string = '';
-  @Input() min?: number;
-  @Input() max?: number;
-  @Input() step?: number;
+  @Input() min?: number = 0;
+  @Input() max?: number = 0;
+  @Input() step?: number = 0;
+  @Input() fullWidth = false;
 
   @Input() value!: number | string;
   @Output() valueChange = new EventEmitter<number | string>();

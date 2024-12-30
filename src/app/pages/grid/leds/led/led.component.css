@@ -5,10 +5,12 @@
     background: var(--bg-color);
     font-size: var(--font-size-xs);
     color: rgba(255, 255, 255, 0.157);
+    cursor: pointer;
+    user-select: none;
     &:hover {
         background-color: var(--bg-color-light-2);
     }
     &.checked {
-        outline: 1px solid rgba(255, 255, 255, 0.514);
+        outline: 1px solid var(--bg-color-light);
     }
 }

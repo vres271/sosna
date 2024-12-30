@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ConfigService } from './config.service';
 
 export enum APIMethod {
   Set = 'set',
@@ -17,10 +18,15 @@ export interface IAPIService {
 @Injectable()
 export class APIService implements IAPIService{
 
-  public baseURL = 'http://192.168.0.102/';
+  public baseURL = 'http://192.168.0.102';
   public isPending = false;
 
-  constructor() { }
+  constructor(
+    private configService: ConfigService
+  ) {
+    const config = this.configService.get();
+    this.baseURL = config.baseURL
+  }
 
   query<T>(method: APIMethod, payload?: any): Promise<IAPIResponse<T>> {
     const formData  = new FormData();
@@ -28,7 +34,7 @@ export class APIService implements IAPIService{
       formData.append('payload', payload);
     }
     this.isPending = true;
-    return fetch(this.baseURL+method, {
+    return fetch(`${this.baseURL}/${method}`, {
       method: 'POST',
       body: formData,
       // mode: 'cors',

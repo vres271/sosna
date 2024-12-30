@@ -21,4 +21,7 @@ input {
         opacity: .5;
         cursor: not-allowed;
     }
+    &.full-width {
+        width: 100%;
+    }
 }
