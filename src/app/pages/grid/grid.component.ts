@@ -2,8 +2,6 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { ButtonComponent } from '../../ui/button/button.component';
 import { InputComponent } from '../../ui/input/input.component';
 import { LedsComponent, SelectMode } from './leds/leds.component';
-import { APIMockService } from '../../mocks/services/apimock.service';
-import { APIService } from '../../shared/services/api.service';
 import { LedsService } from '../../shared/services/leds.service';
 import { IGPoint, IGVector, ILed, OrderFn, TimeFn } from '../../shared/model/leds';
 import { ColorPaletteComponent } from '../../ui/color-palette/color-palette.component';
@@ -13,10 +11,10 @@ import { LedEditorComponent } from './led-editor/led-editor.component';
 @Component({
   selector: 'app-grid',
   standalone: true,
-  imports: [ButtonComponent, InputComponent, LedsComponent, ColorPaletteComponent, LedEditorComponent],
+  imports: [ButtonComponent, LedsComponent, ColorPaletteComponent, LedEditorComponent],
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css',
-  providers: [APIMockService, APIService, LedsService],
+  providers: [LedsService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 

@@ -5,6 +5,7 @@ export enum APIMethod {
   Set = 'set',
   Clear = 'clear',
   SetMode = 'setmode',
+  GetModes = 'getmodes',
 }
 
 export interface IAPIResponse<T> {
@@ -26,7 +27,8 @@ export class APIService implements IAPIService{
     private configService: ConfigService
   ) {
     const config = this.configService.get();
-    this.baseURL = config.baseURL
+    this.baseURL = config.baseURL;
+    console.log(777)
   }
 
   query<T>(method: APIMethod, payload?: any): Promise<IAPIResponse<T>> {

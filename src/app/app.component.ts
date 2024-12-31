@@ -5,13 +5,14 @@ import { RouterPath } from './app.routes';
 import { APIService } from './shared/services/api.service';
 import { LocalStorageService } from './shared/services/local-storage.service';
 import { ConfigService } from './shared/services/config.service';
+import { APIMockService } from './mocks/services/apimock.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './app.component.html',
-  providers: [APIService, LocalStorageService, ConfigService],
+  providers: [APIService, APIMockService, LocalStorageService, ConfigService],
   styles: [`
     .base-url {
       margin-left: auto;

@@ -1,16 +1,25 @@
 import { Injectable } from '@angular/core';
 import { APIMethod, IAPIResponse, IAPIService } from '../../shared/services/api.service';
+import { IMode } from '../../pages/modes/modes.component';
+
+const modes: IMode[] = [
+  {id: 1, name: 'Sinus Warm'},
+  {id: 2, name: 'Sinus Cold'},
+  {id: 3, name: 'Sinus RGB'},
+]
 
 @Injectable()
 export class APIMockService implements IAPIService {
 
   private loging = true;
   private shortLogMode = false;
-  private responseDelay = 300;
+  private responseDelay = 310;
 
   public isPending = false;
 
-  constructor() { }
+  private selectedModeId = 0;
+
+  constructor() {}
 
   query<T>(method: APIMethod, payload?: string): Promise<IAPIResponse<T>> {
     this.isPending = true;
@@ -35,8 +44,11 @@ export class APIMockService implements IAPIService {
       case APIMethod.Clear:
         return {result: 'ok'};
       case APIMethod.SetMode:
-        result = payload ? parseInt(payload, 10) : null;
+        this.selectedModeId = payload ? parseInt(payload, 10) : 0;
+        result = this.selectedModeId;
         return {result};
+      case APIMethod.GetModes:
+        return {result: {modes, mode: this.selectedModeId}};
       default:
         return {result: 'Unknown method'};
     }

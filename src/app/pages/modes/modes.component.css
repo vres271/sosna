@@ -1,4 +1,14 @@
-.active{
-    background-color: var(--bg-color-light-2)
-
+.modes-list {
+    & .mode{
+        &.active{
+            background-color: var(--bg-color-light-2);
+            cursor: default;
+            &:hover{
+                background-color: var(--bg-color-light-2);
+            }
+        }    
+        &:hover{
+            background-color: var(--bg-color);
+        }        
+    }
 }

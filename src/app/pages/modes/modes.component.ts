@@ -1,45 +1,60 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { LedsService } from '../../shared/services/leds.service';
-import { APIService } from '../../shared/services/api.service';
-import { APIMockService } from '../../mocks/services/apimock.service';
 
 export interface IMode {
   id: number;
   name: string;
 }
 
-export const modes: IMode[] = [
-  {id: 1, name: 'Sinus Warm'},
-  {id: 2, name: 'Sinus Cold'},
-  {id: 3, name: 'Sinus RGB'},
-]
+// export const modes: IMode[] = [
+//   {id: 1, name: 'Sinus Warm'},
+//   {id: 2, name: 'Sinus Cold'},
+//   {id: 3, name: 'Sinus RGB'},
+// ]
 
 @Component({
   selector: 'app-modes',
   standalone: true,
   imports: [],
-  providers: [APIMockService, APIService, LedsService],
+  providers: [LedsService],
   templateUrl: './modes.component.html',
   styleUrl: './modes.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ModesComponent {
+export class ModesComponent implements OnInit{
 
-  modes = modes;
+  modes: IMode[] = [];
   selectedMode: IMode | null = null;
+  isLoading = false;
 
   constructor(
     private ledsService: LedsService,
     private cd: ChangeDetectorRef,
   ) { }
 
-  setMode(mode: IMode) {
-    this.ledsService.setMode(mode?.id).then(res => {
+  ngOnInit(): void {
+    this.isLoading = true;
+    this.ledsService.getModes().then(res => {
       if (res.result) {
-        this.selectedMode = this.modes.find(m => m.id === +res.result) || null;
+        this.modes = res.result?.modes;
+        const mode = res.result?.mode;
+        this.selectedMode = this.modes.find(m => m.id === mode) || null;
+        this.isLoading = false;
         this.cd.detectChanges();
       }
-    });
+    })
+  }
+
+  setMode(mode: IMode | null) {
+    if (mode) {
+      this.ledsService.setMode(mode?.id).then(res => {
+        if (res.result) {
+          this.selectedMode = mode;
+          this.cd.detectChanges();
+        }
+      });
+    }
+    this.selectedMode = mode;
   }
 
 }

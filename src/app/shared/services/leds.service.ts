@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { IGPoint, IGVector, ILed } from '../model/leds';
 import { APIMethod, APIService } from './api.service';
 import { APIMockService } from '../../mocks/services/apimock.service';
+import { IMode } from '../../pages/modes/modes.component';
 
 @Injectable()
 export class LedsService {
@@ -22,6 +23,10 @@ export class LedsService {
 
   setMode(modeId: number) {
     return this.api.query<number>(APIMethod.SetMode, String(modeId));
+  }
+
+  getModes() {
+    return this.api.query<{modes: IMode[], mode: number}>(APIMethod.GetModes);
   }
 
   private ledsToString(leds: ILed[]) {
