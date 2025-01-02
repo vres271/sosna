@@ -44,6 +44,11 @@ export class LedsService {
     return this.api.query<{modes: IMode[], mode: number}>(APIMethod.GetModes);
   }
 
+  testAddr(address: string) {
+    this.api.setBaseUrl(address);
+    return  this.api.query(APIMethod.DeviceInfo);
+  }
+
   private ledsToString(leds: ILed[]) {
     return leds
       .map(led => led.ledIndex + ':' + this.vectorToString(led.vector))
@@ -63,5 +68,7 @@ export class LedsService {
   public get isPending() {
     return this.api.isPending;
   }
+
+
 
 }

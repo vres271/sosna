@@ -24,4 +24,5 @@ export class ConfigService {
     this.localStorageService.set('config', config);
   }
 
+
 }

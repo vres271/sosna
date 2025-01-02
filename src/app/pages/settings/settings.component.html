@@ -2,7 +2,11 @@
     <div class="scrollable settings">
         <div class="flex column m-2" style="width: 50%;">
             <label for="">Device address:</label>
-            <ui-input type="text" [(value)]="baseURL" [fullWidth]="true"></ui-input>
+            <div class="flex row gap-2">
+                <ui-input type="text" [(value)]="baseURL" [fullWidth]="true"></ui-input>
+                <ui-button (onClick)="autoDetectAddress()" [compact]="true" style="margin-left: 40px;">Detect</ui-button>
+                <div [style.color]="detectAddressResultColor || 'white'">result: {{detectAddressResult}}</div>
+            </div>
         </div>
         
 

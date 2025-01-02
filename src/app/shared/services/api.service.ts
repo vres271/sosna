@@ -6,6 +6,7 @@ export enum APIMethod {
   Clear = 'clear',
   SetMode = 'setmode',
   GetModes = 'getmodes',
+  DeviceInfo = 'sosna',
 }
 
 export interface IAPIResponse<T> {
@@ -50,6 +51,10 @@ export class APIService implements IAPIService{
       .then(res => {
         return res.json();
       })
+  }
+
+  setBaseUrl(url: string) {
+    this.baseURL = url;
   }
 
 }
