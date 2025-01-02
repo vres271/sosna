@@ -1,7 +1,7 @@
 <div class="flex column gap-2  items-center" style="height: 100%;">
     <div class="flex row end gap-2">{{selectedLeds.length}}
         <input type="color" id="head" name="head" (change)="setColor($event)" [value]="color" />
-        <ui-button role="success" (onClick)="sendChecked()" [compact]="true">SD</ui-button>
+        <ui-button role="success" (onClick)="sendChecked()" [compact]="true">SD({{this.serialSetCountrer}})</ui-button>
         <ui-button role="danger" #btn (onClick)="sendClear(btn)" [compact]="true">SC</ui-button>
         <div class="palette-dropdown">
             <ui-button role="primary" (onClick)="isPaletteVisible = true" [compact]="true">P</ui-button>

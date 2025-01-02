@@ -8,13 +8,28 @@ import { IMode } from '../../pages/modes/modes.component';
 export class LedsService {
 
   constructor(
-    // private api: APIService
-    private api: APIMockService
+    private api: APIService
+    // private api: APIMockService
   ) { }
 
   set(leds: ILed[]) {
     const ledsData = this.ledsToString(leds);
     return this.api.query<number[]>(APIMethod.Set, ledsData)
+  }
+
+  serialSet(leds: ILed[], onStep: (counter: number) => void) {
+    const next = (i: number) => {
+      const led = leds[i];
+      if (led) {
+        this.set([led]).then(res => {
+          if (+res?.result === led.ledIndex) {
+            onStep(i);
+            next(++i);
+          }
+        })
+      }
+    }
+    next(0);
   }
 
   clear() {

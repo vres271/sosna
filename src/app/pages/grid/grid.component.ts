@@ -28,6 +28,7 @@ export class GridComponent implements OnInit{
 
   SelectMode = SelectMode;
   selectMode = SelectMode.Click;
+  serialSetCountrer = 0;
 
   selectModesDict = [
     {mode: SelectMode.Click, label: 'Sel'},
@@ -113,8 +114,17 @@ export class GridComponent implements OnInit{
 
   sendLeds(leds: ILed[]) {
     if (this.ledsService.isPending) return;
-    this.ledsService.set(leds)
-      .then(res => console.log(res));
+    this.serialSetCountrer = 0;
+    console.log({leds});
+    if (leds?.length === 1) {
+      this.ledsService.set(leds)
+        .then(res => console.log(res));
+    } else {
+      this.ledsService.serialSet(leds, counter => {
+        this.serialSetCountrer = counter;
+        this.cd.detectChanges();
+      });
+    }
   }
 
   onMouseEnter(cell: {vector: IGVector, checked: boolean}, i: number, e: MouseEvent) {

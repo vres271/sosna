@@ -28,7 +28,6 @@ export class APIService implements IAPIService{
   ) {
     const config = this.configService.get();
     this.baseURL = config.baseURL;
-    console.log(777)
   }
 
   query<T>(method: APIMethod, payload?: any): Promise<IAPIResponse<T>> {
