@@ -56,7 +56,23 @@ export class LedComponent implements OnInit, OnChanges{
     return point ? `rgb(${point.r},${point.g},${point.b})` : '';
   }
 
-  getVectorCurrentColor(vector: IGVector | undefined) {
+  getVectorCurrentColor(vector: IGVector) {
+    const points = vector?.points;
+    if (!points?.length) return '';
+    const duration = points[points.length - 1].t;
+    const t1 = this.t % duration;
+    const next = points.find(p => p.t > t1) || points[0];
+    const prev = points[points.indexOf(next) - 1] || points[points.length - 1];
+    const dt = next.t - prev.t;
+    const dt1 = Math.abs(t1 - prev.t);
+    const k = dt1 / dt;
+    const r = Math.round(prev.r + (next.r - prev.r) * k);
+    const g = Math.round(prev.g + (next.g - prev.g) * k);
+    const b = Math.round(prev.b + (next.b - prev.b) * k);
+    return `rgb(${r},${g},${b})`;
+  }
+
+  getVectorCurrentColorOld(vector: IGVector | undefined) {
     if (!vector?.points?.length) return '';
     const point = this.getCurrentPoint(vector);
     return this.getStyleColor(point);
