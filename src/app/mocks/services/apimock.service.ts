@@ -54,6 +54,10 @@ export class APIMockService implements IAPIService {
     }
   }
 
+  setBaseUrl(address: string) {
+    console.log('setBaseUrl', address);
+  }
+
   log(label: string, method: APIMethod, payload?: string, response?: IAPIResponse<any>) {
     if (this.shortLogMode) {
       console.log(payload, response?.result);

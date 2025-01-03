@@ -22,6 +22,7 @@ export interface IGPoint {
 export interface IGVector {
   points: IGPoint[];
   t: number;
+  timeOffset: number;
 }
 
 export interface ILed {

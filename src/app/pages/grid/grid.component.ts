@@ -61,6 +61,7 @@ export class GridComponent implements OnInit{
     return {
       points: [],
       t: 0,
+      timeOffset: 0,
     }
   }
 
@@ -158,6 +159,7 @@ export class GridComponent implements OnInit{
       led.vector = {
         points: [],
         t: 0,
+        timeOffset: 0,
       },
       this.leds[led.ledIndex] = {
         ...led

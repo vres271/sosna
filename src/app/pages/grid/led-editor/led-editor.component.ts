@@ -77,6 +77,11 @@ export class LedEditorComponent implements OnChanges, AfterViewInit{
     this.valueChange.emit(this.value);
   }
 
+  onTimeOffsetChange(value: number | string) {
+    this.value.vector.timeOffset = +value;
+    this.valueChange.emit(this.value);
+  }
+
   onSliderClick(e: MouseEvent) {
     if (!(e.target as HTMLElement).classList.contains('slider')) return;
     const t = this.pixelsToTime(e.offsetX);

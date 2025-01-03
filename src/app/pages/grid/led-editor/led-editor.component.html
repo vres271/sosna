@@ -1,6 +1,11 @@
 <div class="flex column gap-2 p-2">
     <div class="flex row">
         <ui-input 
+            [value]="value.vector.timeOffset"
+            (valueChange)="onTimeOffsetChange($event)"
+            type="number"
+        ></ui-input>
+        <ui-input 
             [(value)]="maxT" 
             (valueChange)="onMaxTChange()"
             type="number" [min]="100"

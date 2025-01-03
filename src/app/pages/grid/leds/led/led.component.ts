@@ -60,7 +60,7 @@ export class LedComponent implements OnInit, OnChanges{
     const points = vector?.points;
     if (!points?.length) return '';
     const duration = points[points.length - 1].t;
-    const t1 = this.t % duration;
+    const t1 = (this.t - vector.timeOffset * this.led.ledIndex) % duration;
     const next = points.find(p => p.t > t1) || points[0];
     const prev = points[points.indexOf(next) - 1] || points[points.length - 1];
     const dt = next.t - prev.t;

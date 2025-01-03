@@ -8,8 +8,8 @@ import { IMode } from '../../pages/modes/modes.component';
 export class LedsService {
 
   constructor(
-    private api: APIService
-    // private api: APIMockService
+    // private api: APIService
+    private api: APIMockService
   ) { }
 
   set(leds: ILed[]) {
@@ -56,9 +56,7 @@ export class LedsService {
   }
 
   private vectorToString(vector: IGVector) {
-    return vector.points
-      .map(this.pointToString)
-      .join('|');
+    return `${vector.timeOffset}:${vector.points.map(this.pointToString).join('|')}`;
   }
 
   private pointToString(p: IGPoint) {
