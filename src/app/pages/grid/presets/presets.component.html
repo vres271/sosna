@@ -1,0 +1,13 @@
+<div class="flex column gap-2 p-3">
+    <div class="flex row gap-2 space-between">
+        <ui-input [(value)]="preset.name"></ui-input>
+        <ui-button role="primary" (onClick)="addPreset()">Add</ui-button>
+        <ui-button role="default" (onClick)="onClose()">Close</ui-button>
+    </div>
+    @for (preset of presets; track $index) {
+    <div class="flex row gap-2 space-between">
+        <div (click)="onSelectPreset(preset)" class="cursor-pointer">{{preset.name}}</div>
+        <ui-button role="danger" (onClick)="deletePreset(preset)" [compact]="true">X</ui-button>
+    </div>
+    }
+</div>

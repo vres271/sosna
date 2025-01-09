@@ -1,9 +1,18 @@
 <div class="flex column gap-2  items-center" style="height: 100%;">
-    <div class="flex row end gap-2">{{selectedLeds.length}}
+    <div class="flex row end gap-2">
+        @if (isPresetsVisible) {
+        <div class="sidebar-dropdown presets">
+            <app-presets 
+                [leds]="leds" 
+                (selectPreset)="applyPreset($event)"
+                (close)="isPresetsVisible = false"
+            ></app-presets>
+        </div>
+        }
         <input type="color" id="head" name="head" (change)="setColor($event)" [value]="color" />
         <ui-button role="success" (onClick)="sendChecked()" [compact]="true">SD({{this.serialSetCountrer}})</ui-button>
         <ui-button role="danger" #btn (onClick)="sendClear(btn)" [compact]="true">SC</ui-button>
-        <div class="palette-dropdown">
+        <div class="sidebar-dropdown">
             <ui-button role="primary" (onClick)="isPaletteVisible = true" [compact]="true">P</ui-button>
             @if (isPaletteVisible) {
             <ui-color-palette [(value)]="color" (valueChange)="isPaletteVisible = false" />
@@ -13,6 +22,7 @@
         <ui-button (onClick)="selectMode = item.mode" [role]="selectMode === item.mode ? 'primary' : 'default'"
             [label]="item.label" [compact]="true"></ui-button>
         }
+        <ui-button role="default" (onClick)="isPresetsVisible = !isPresetsVisible" [compact]="true">P</ui-button>
         <!-- <ui-input [(value)]="duration"></ui-input> -->
         <!-- <ui-button role="primary" (onClick)="setChecked()" [compact]="true">ST</ui-button> -->
         <!-- <ui-button role="warning" (onClick)="setClear()" [compact]="true">STC</ui-button> -->

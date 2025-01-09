@@ -6,12 +6,14 @@ import { LedsService } from '../../shared/services/leds.service';
 import { IGPoint, IGVector, ILed, OrderFn, TimeFn } from '../../shared/model/leds';
 import { ColorPaletteComponent } from '../../ui/color-palette/color-palette.component';
 import { LedEditorComponent } from './led-editor/led-editor.component';
+import { PresetsComponent } from './presets/presets.component';
+import { IPreset } from '../../shared/model/presets';
 
 
 @Component({
   selector: 'app-grid',
   standalone: true,
-  imports: [ButtonComponent, LedsComponent, ColorPaletteComponent, LedEditorComponent],
+  imports: [ButtonComponent, LedsComponent, ColorPaletteComponent, LedEditorComponent, PresetsComponent],
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css',
   providers: [LedsService],
@@ -38,6 +40,7 @@ export class GridComponent implements OnInit{
   ]
 
   isPaletteVisible = false;
+  isPresetsVisible = false;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -67,6 +70,11 @@ export class GridComponent implements OnInit{
 
   ngOnInit() {
     this.leds =  this.createLeds();
+  }
+
+  applyPreset(preset: IPreset) {
+    this.leds = preset.leds;
+    this.cd.detectChanges();
   }
 
   onLedClick(led: ILed) {

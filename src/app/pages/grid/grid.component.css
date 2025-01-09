@@ -3,13 +3,24 @@
     text-shadow: #ffffff 1px 0 2px;
 }
 
-.palette-dropdown {
+.sidebar-dropdown {
     position: relative;
-    & ui-color-palette {
-        top: 28x;
-        left: 0px;
-        position: absolute;
-    }
+}
+
+ui-color-palette {
+    top: 28px;
+    left: 0px;
+    position: absolute;
+}
+
+app-presets {
+    z-index: 99;
+    top: 28px;
+    left: 0px;
+    position: absolute;
+    background: var(--bg-color);
+    min-width: 442px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
 }
 
 .led-editor-wrapper {
